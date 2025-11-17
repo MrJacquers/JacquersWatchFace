@@ -9,6 +9,7 @@ class DataFields {
     private var _altitudeId;
     private var _bodyBatteryId;
     private var _recoveryTimeId;
+    private var _seaLevelPressureId;
 
     // https://developer.garmin.com/connect-iq/core-topics/complications/
     // https://developer.garmin.com/connect-iq/api-docs/Toybox/Complications.html
@@ -20,6 +21,7 @@ class DataFields {
         _altitudeId = new Complications.Id(Complications.COMPLICATION_TYPE_ALTITUDE);
         _bodyBatteryId = new Complications.Id(Complications.COMPLICATION_TYPE_BODY_BATTERY);
         _recoveryTimeId = new Complications.Id(Complications.COMPLICATION_TYPE_RECOVERY_TIME);
+        _seaLevelPressureId = new Complications.Id(Complications.COMPLICATION_TYPE_SEA_LEVEL_PRESSURE);
         //Complications.registerComplicationChangeCallback(self.method(:onComplicationChanged));
     }
 
@@ -101,6 +103,19 @@ class DataFields {
         var comp = Complications.getComplication(_altitudeId);
         if (comp.value != null) {
             return comp.value;
+        }
+        return "--";
+    }
+
+    function getBarometricPressure() {
+        var comp = Complications.getComplication(_seaLevelPressureId);
+        if (comp.value != null) {
+            var pressure = comp.value;
+            // Format as integer with no decimals
+            if (pressure instanceof Number || pressure instanceof Float || pressure instanceof Double) {
+                return pressure.format("%.0f");
+            }
+            return pressure.toString();
         }
         return "--";
     }

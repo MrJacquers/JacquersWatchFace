@@ -19,6 +19,7 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _recoveryTime;
   private var _steps;
   private var _battery;
+  //private var _pressure;
 
   function initialize() {
     //System.println("view.initialize");
@@ -68,6 +69,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     // get data that isn't updated frequently
     _steps = _dataFields.getSteps();
     _battery = _dataFields.getBattery();
+    //_pressure = _dataFields.getBarometricPressure();
     _recoveryTime = _dataFields.getRecoveryTime();
     getSunInfo();
 
@@ -98,6 +100,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     // get data that isn't updated frequently
     _steps = _dataFields.getSteps();
     _battery = _dataFields.getBattery();
+    //_pressure = _dataFields.getBarometricPressure();
     _recoveryTime = _dataFields.getRecoveryTime();
     getSunInfo();
 
@@ -158,12 +161,12 @@ class WatchFaceView extends WatchUi.WatchFace {
 
       // phone connected
       if (deviceSettings.phoneConnected) {
-        dc.drawText(_devCenter, 40, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(_devCenter, 47, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       }
       
       // date
       var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-      dc.drawText(_devCenter, 85, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+      dc.drawText(_devCenter, 99, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
       
       // hour
       dc.drawText(_devCenter - 5, _devCenter, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -172,7 +175,7 @@ class WatchFaceView extends WatchUi.WatchFace {
       dc.drawText(_devCenter + 5, _devCenter, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
       // heart rate and battery
-      dc.drawText(_devCenter, 260, Graphics.FONT_SMALL, _battery + "   " + _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_CENTER);
+      dc.drawText(_devCenter, 303, Graphics.FONT_SMALL, _battery + "   " + _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_CENTER);
 
       // lines for positioning   
       drawGrid(dc);
@@ -184,50 +187,54 @@ class WatchFaceView extends WatchUi.WatchFace {
 
     if (_sunriseInfo != null) {
       // sunrise info
-      dc.drawText(_devCenter, 15, Graphics.FONT_SMALL, _sunriseInfo.hour.format("%02d") + ":" + _sunriseInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_CENTER);
+      dc.drawText(_devCenter, 17, Graphics.FONT_SMALL, _sunriseInfo.hour.format("%02d") + ":" + _sunriseInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     // hour
-    dc.drawText(210, 85, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(245, 99, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // minute
-    dc.drawText(210, 235, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(245, 280, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // phone connected
     if (deviceSettings.phoneConnected) {
-      dc.drawText(70, _devCenter, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(81, _devCenter, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     // date
     var date = Lang.format("$1$ $2$", [dateInfo.day_of_week, dateInfo.day.format("%02d")]);
-    dc.drawText(215, _devCenter, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(250, _devCenter, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
     // heart rate
-    dc.drawText(70, 80, _iconFont, "h", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(115, 75, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(81, 93, _iconFont, "h", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(134, 87, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_LEFT);
 
     // steps
-    dc.drawText(70, 120, _iconFont, "s", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(115, 115, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(81, 140, _iconFont, "s", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(134, 134, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_LEFT);
 
     // seconds
-    dc.drawText(115, _devCenter, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(134, _devCenter, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
     // recovery time
-    dc.drawText(70, 235, _iconFont, "r", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(115, 230, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(81, 274, _iconFont, "r", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(134, 268, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_LEFT);
     
     // battery
-    dc.drawText(115, 270, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
-    //dc.drawRectangle(200, 270, 90, 50);
+    dc.drawText(134, 314, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
+    //dc.drawRectangle(130, 310, 90, 60);
 
     if (_sunsetInfo != null) {
       // sunset info
-      dc.drawText(_devCenter, 330, Graphics.FONT_SMALL, _sunsetInfo.hour.format("%02d") + ":" + _sunsetInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_CENTER);
+      dc.drawText(_devCenter, 384, Graphics.FONT_SMALL, _sunsetInfo.hour.format("%02d") + ":" + _sunsetInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_CENTER);
     }
 
+    // barometric pressure with box at bottom
+    //dc.drawText(_devCenter, 375, Graphics.FONT_SMALL, _pressure + " hPa", Graphics.TEXT_JUSTIFY_CENTER);
+    //dc.drawRectangle(_devCenter - 55, 360, 110, 30);
+
     // lines for positioning
-    drawGrid(dc);    
+    drawGrid(dc);
   }
 
   // Get sunrise and sunset times based on the current location.
