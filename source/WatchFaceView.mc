@@ -140,10 +140,10 @@ class WatchFaceView extends WatchUi.WatchFace {
         return;
       }
       
-      var y = 60;
+      var y = 50;
       for (var i = 0; i < entries.size(); i++) {
         dc.drawText(_devCenter, y, Graphics.FONT_TINY, entries[i], Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-        y += 30;
+        y += 40;
       }
       
       return;
