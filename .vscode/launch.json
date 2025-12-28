@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    
         {
             "type": "monkeyc",
             "request": "launch",
@@ -25,6 +26,14 @@
             "stopAtLaunch": false,
             "complicationSubscriberFolder": "${command:GetComplicationSubscriberFolder}",
             "complicationPublisherFolder": "${command:GetComplicationPublisherFolder}",
+            "device": "${command:GetTargetDevice}"
+        },
+        {
+            "type": "monkeyc",
+            "request": "launch",
+            "name": "Run Native Pairing",
+            "runNativePairing": true,
+            "stopAtLaunch": false,
             "device": "${command:GetTargetDevice}"
         }
     ]
