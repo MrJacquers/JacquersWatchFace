@@ -10,8 +10,11 @@ class WatchDelegate extends WatchFaceDelegate {
 
   // Handle touch long press events.
   function onPress(clickEvent) as Boolean {
-    ShowBatteryHistory = false;
-    
+    if (ShowBatteryHistory) {
+      ShowBatteryHistory = false;
+      return true;
+    }
+
     var coords = clickEvent.getCoordinates();
     var x = coords[0];
     var y = coords[1];

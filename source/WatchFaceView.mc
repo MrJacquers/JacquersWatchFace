@@ -14,8 +14,8 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _settings;
   private var _dataFields;
   private var _isDay = true;
-  private var _sunriseInfo;
-  private var _sunsetInfo;
+  private var _sunriseText = "";
+  private var _sunsetText = "";
   private var _recoveryTime;
   private var _steps;
   private var _battery;
@@ -125,7 +125,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     }
 
     if (ShowBatteryHistory) {
-      dc.setColor(Graphics.COLOR_DK_GRAY, _settings.bgColor);
+      dc.setColor(_isDay ? _settings.textColorDay : _settings.textColorNight, _settings.bgColor);
       
       if (!_settings.battLogEnabled) {
         dc.drawText(_devCenter, _devCenter, Graphics.FONT_SMALL, "Battery Log Disabled", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -161,12 +161,12 @@ class WatchFaceView extends WatchUi.WatchFace {
 
       // phone connected
       if (deviceSettings.phoneConnected) {
-        dc.drawText(_devCenter, 47, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(_devCenter, 55, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       }
       
       // date
       var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-      dc.drawText(_devCenter, 99, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+      dc.drawText(_devCenter, 105, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
       
       // hour
       dc.drawText(_devCenter - 5, _devCenter, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -174,8 +174,13 @@ class WatchFaceView extends WatchUi.WatchFace {
       // minute
       dc.drawText(_devCenter + 5, _devCenter, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
-      // heart rate and battery
-      dc.drawText(_devCenter, 303, Graphics.FONT_SMALL, _battery + "   " + _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_CENTER);
+      // heart rate
+      dc.drawText(_devCenter - 10, 302, _iconFont, "h", Graphics.TEXT_JUSTIFY_RIGHT);
+      dc.drawText(_devCenter - 60, 295, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_RIGHT);
+      
+      // battery
+      dc.drawText(_devCenter + 10, 300, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
+      dc.drawText(_devCenter + 50, 295, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
 
       // lines for positioning   
       drawGrid(dc);
@@ -187,46 +192,43 @@ class WatchFaceView extends WatchUi.WatchFace {
     
     // date
     var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-    dc.drawText(_devCenter, 70, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(_devCenter, 60, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
 
     // phone connected
     if (deviceSettings.phoneConnected) {
-      dc.drawText(65, 150, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(65, 170, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
     }
 
     // hour
-    dc.drawText(_devCenter - 5, 150, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(_devCenter - 5, 170, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
       
     // minute
-    dc.drawText(_devCenter + 5, 150, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(_devCenter + 5, 170, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
     // seconds
-    dc.drawText(355, 142, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(355, 162, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // heart rate
-    dc.drawText(100, 237, _iconFont, "h", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter - 10, 230, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter - 10, 236, _iconFont, "h", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(175, 230, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_RIGHT);
 
     // steps
     dc.drawText(_devCenter + 10, 237, _iconFont, "s", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter + 60, 230, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + 55, 230, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_LEFT);
 
     // recovery time
-    dc.drawText(100, 297, _iconFont, "r", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter - 10, 290, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter - 10, 292, _iconFont, "r", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(175, 285, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_RIGHT);
     
     // battery
-    dc.drawText(_devCenter + 10, 290, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
-    //dc.drawRectangle(130, 310, 90, 60);
+    dc.drawText(_devCenter + 10, 290, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + 55, 285, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
 
-    if (_sunriseInfo != null) {
-      dc.drawText(_devCenter - 10, 355, Graphics.FONT_SMALL, _sunriseInfo.hour.format("%02d") + ":" + _sunriseInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
-    }
-
-    if (_sunsetInfo != null) {
-      dc.drawText(_devCenter + 10, 355, Graphics.FONT_SMALL, _sunsetInfo.hour.format("%02d") + ":" + _sunsetInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
-    }
-
+    // sunrise and sunset
+    dc.drawText(_devCenter, 350, _iconFont, "S", Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(_devCenter - 35, 343, Graphics.FONT_SMALL, _sunriseText, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter + 35, 343, Graphics.FONT_SMALL, _sunsetText, Graphics.TEXT_JUSTIFY_LEFT);
+    
     // barometric pressure with box at bottom
     //dc.drawText(_devCenter, 375, Graphics.FONT_SMALL, _pressure + " hPa", Graphics.TEXT_JUSTIFY_CENTER);
     //dc.drawRectangle(_devCenter - 55, 360, 110, 30);
@@ -253,15 +255,19 @@ class WatchFaceView extends WatchUi.WatchFace {
 
     if (location != null) {
       // save in storage
-      var locationInfo = location.toDegrees();			
+      var locationInfo = location.toDegrees();
 			Settings.setStorageValue("LastLocationLat", locationInfo[0]);
 			Settings.setStorageValue("LastLocationLon", locationInfo[1]);
 
-      // get sunrise and sunset times
+      // get sunrise time
       var sunrise = Weather.getSunrise(location, now);
+      var sunriseInfo = Gregorian.info(sunrise, Time.FORMAT_MEDIUM);
+      _sunriseText = sunriseInfo.hour.format("%02d") + ":" + sunriseInfo.min.format("%02d");
+      
+      // get sunset time
       var sunset = Weather.getSunset(location, now);
-      _sunriseInfo = Gregorian.info(sunrise, Time.FORMAT_MEDIUM);
-      _sunsetInfo = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
+      var sunsetInfo = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
+      _sunsetText = sunsetInfo.hour.format("%02d") + ":" + sunsetInfo.min.format("%02d");
 
       // check if it's day or night
       _isDay = now.value() >= sunrise.value() && now.value() <= sunset.value();
@@ -291,7 +297,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     }
 
     var i = 0;
-    var gapSize = _devSize / 20.0;
+    var gapSize = _devSize / 8.0;
 
     dc.setColor(Graphics.COLOR_DK_GRAY, -1);
     do {
