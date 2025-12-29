@@ -1,5 +1,5 @@
 <fonts>
-    <font id="icons" filename="icons_36.fnt" antialias="true" filter="behsr" />
+    <font id="icons" filename="icons_36.fnt" antialias="true" filter="BSbehsr" />
     <font id="oxanium" filename="oxanium_96.fnt" antialias="true" filter="0123456789:" />
     <!-- <font id="oxanium_outline" filename="oxanium_semibold_outline_96.fnt" antialias="true" filter="0123456789:" /> -->
     <!-- <font id="saira_outline" filename="saira_exp_bold_outline_96.fnt" antialias="true" filter="0123456789:" /> -->
