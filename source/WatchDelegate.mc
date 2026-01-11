@@ -22,13 +22,13 @@ class WatchDelegate extends WatchFaceDelegate {
 
     if (x < 227 && y < 227) {
       System.println("onPress: altitude");
-      Complications.exitTo(new Complications.Id(Complications.COMPLICATION_TYPE_ALTITUDE));
+      //Complications.exitTo(new Complications.Id(Complications.COMPLICATION_TYPE_ALTITUDE));
       return true;
     }
 
     if (x > 227 && y < 227) {
       System.println("onPress: sea level pressure");
-      Complications.exitTo(new Complications.Id(Complications.COMPLICATION_TYPE_SEA_LEVEL_PRESSURE));
+      //Complications.exitTo(new Complications.Id(Complications.COMPLICATION_TYPE_SEA_LEVEL_PRESSURE));
       return true;
     }
 

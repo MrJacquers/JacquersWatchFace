@@ -1,20 +1,20 @@
 <properties>
     <!-- Color Codes: https://developer.garmin.com/connect-iq/api-docs/Toybox/Graphics.html -->
-    <property id="LayoutType" type="number">0</property>
+    <!-- <property id="LayoutType" type="number">0</property> -->
     <property id="BGColor" type="number">0x000000</property>
-    <property id="TextColorDay" type="number">0x329600</property>
-    <property id="TextColorNight" type="number">0xC86400</property>
-    <property id="TextColorSleep" type="number">0xC86400</property>
-    <property id="TimeFont" type="number">0</property>
-    <property id="DateColor" type="number">0xAAAAAA</property>
-    <property id="HRColor" type="number">0xFF5500</property>
-    <property id="ConnectColor" type="number">0x00AAFF</property>
-    <property id="HourColor" type="number">0xAAAAAA</property>
-    <property id="MinuteColor" type="number">0x00FF00</property>
-    <property id="SecColor" type="number">0xFF5500</property>
-    <property id="BodyBattColor" type="number">0xAAAAAA</property>
-    <property id="AltitudeColor" type="number">0xAAAAAA</property>
-    <property id="StepsColor" type="number">0xAAAAAA</property>
-    <property id="RecoveryColor" type="number">0xAAAAAA</property>
-    <property id="BattColor" type="number">0xAAAAAA</property>
+    <property id="TextColorDay" type="string">0x329600</property>
+    <property id="TextColorNight" type="string">0xC86400</property>
+    <property id="TextColorSleep" type="string">0xC86400</property>
+    <!-- <property id="TimeFont" type="number">0</property> -->
+    <!-- <property id="DateColor" type="number">0xAAAAAA</property> -->
+    <!-- <property id="HRColor" type="number">0xFF5500</property> -->
+    <!-- <property id="ConnectColor" type="number">0x00AAFF</property> -->
+    <!-- <property id="HourColor" type="number">0xAAAAAA</property> -->
+    <!-- <property id="MinuteColor" type="number">0x00FF00</property> -->
+    <!-- <property id="SecColor" type="number">0xFF5500</property> -->
+    <!-- <property id="BodyBattColor" type="number">0xAAAAAA</property> -->
+    <!-- <property id="AltitudeColor" type="number">0xAAAAAA</property> -->
+    <!-- <property id="StepsColor" type="number">0xAAAAAA</property> -->
+    <!-- <property id="RecoveryColor" type="number">0xAAAAAA</property> -->
+    <!-- <property id="BattColor" type="number">0xAAAAAA</property> -->
 </properties>

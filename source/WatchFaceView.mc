@@ -14,12 +14,11 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _settings;
   private var _dataFields;
   private var _isDay = true;
-  private var _sunriseText = "";
-  private var _sunsetText = "";
+  private var _sunriseText = "00:00";
+  private var _sunsetText = "00:00";
   private var _recoveryTime;
   private var _steps;
   private var _battery;
-  //private var _pressure;
 
   function initialize() {
     //System.println("view.initialize");
@@ -38,17 +37,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     }
     
     _settings.loadSettings();
-
     _iconFont = WatchUi.loadResource(Rez.Fonts.icons);
-
-    /*if (_settings.timeFont == 0) {
-      _timeFont = WatchUi.loadResource(Rez.Fonts.rajdhani_bold_mono);
-    } else if (_settings.timeFont == 1) {
-      _timeFont = WatchUi.loadResource(Rez.Fonts.saira_outline);
-    } else {
-      _timeFont = WatchUi.loadResource(Rez.Fonts.saira_reg);
-    }*/
-
     _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium);
   }
 
@@ -192,46 +181,42 @@ class WatchFaceView extends WatchUi.WatchFace {
     
     // date
     var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-    dc.drawText(_devCenter, 60, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(_devCenter, 30, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+
+    // sunrise and sunset
+    dc.drawText(_devCenter, 95, _iconFont, "S", Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(_devCenter - 35, 90, Graphics.FONT_SMALL, _sunriseText, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter + 35, 90, Graphics.FONT_SMALL, _sunsetText, Graphics.TEXT_JUSTIFY_LEFT);
 
     // phone connected
     if (deviceSettings.phoneConnected) {
-      dc.drawText(65, 170, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(65, 185, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT);
     }
 
     // hour
-    dc.drawText(_devCenter - 5, 170, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(_devCenter - 5, 170, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
       
     // minute
-    dc.drawText(_devCenter + 5, 170, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(_devCenter + 5, 170, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // seconds
-    dc.drawText(355, 162, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
-
-    // heart rate
-    dc.drawText(_devCenter - 10, 236, _iconFont, "h", Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(175, 230, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(350, 195, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // steps
-    dc.drawText(_devCenter + 10, 237, _iconFont, "s", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter + 55, 230, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter - 10, 279, _iconFont, "s", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(170, 271, Graphics.FONT_SMALL, _dataFields.getSteps(), Graphics.TEXT_JUSTIFY_RIGHT);
 
     // recovery time
-    dc.drawText(_devCenter - 10, 292, _iconFont, "r", Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(175, 285, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter - 10, 335, _iconFont, "r", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(170, 330, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_RIGHT);
+
+    // heart rate
+    dc.drawText(_devCenter + 10, 279, _iconFont, "h", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + 55, 271, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_LEFT);
     
     // battery
-    dc.drawText(_devCenter + 10, 290, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter + 55, 285, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
-
-    // sunrise and sunset
-    dc.drawText(_devCenter, 350, _iconFont, "S", Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(_devCenter - 35, 343, Graphics.FONT_SMALL, _sunriseText, Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(_devCenter + 35, 343, Graphics.FONT_SMALL, _sunsetText, Graphics.TEXT_JUSTIFY_LEFT);
-    
-    // barometric pressure with box at bottom
-    //dc.drawText(_devCenter, 375, Graphics.FONT_SMALL, _pressure + " hPa", Graphics.TEXT_JUSTIFY_CENTER);
-    //dc.drawRectangle(_devCenter - 55, 360, 110, 30);
+    dc.drawText(_devCenter + 10, 335, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + 55, 330, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
 
     // lines for positioning
     drawGrid(dc);

@@ -1,11 +1,11 @@
 <!--For use via Connect IQ-->
 <settings>
-    <setting propertyKey="@Properties.LayoutType" title="@Strings.LayoutTypeTitle">
+    <!-- <setting propertyKey="@Properties.LayoutType" title="@Strings.LayoutTypeTitle">
         <settingConfig type="list">
             <listEntry value="0">@Strings.LayoutTypeHorizontal</listEntry>
             <listEntry value="1">@Strings.LayoutTypeVertical</listEntry>
         </settingConfig>
-    </setting>
+    </setting> -->
     <setting propertyKey="@Properties.BGColor" title="@Strings.BGColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
@@ -25,22 +25,22 @@
         </settingConfig>
     </setting>
     <setting propertyKey="@Properties.TextColorDay" title="@Strings.TextColorDayTitle">
-        <settingConfig type="numeric" />
+        <settingConfig type="alphaNumeric" />
     </setting>
     <setting propertyKey="@Properties.TextColorNight" title="@Strings.TextColorNightTitle">
-        <settingConfig type="numeric" />
+        <settingConfig type="alphaNumeric" />
     </setting>
     <setting propertyKey="@Properties.TextColorSleep" title="@Strings.TextColorSleepTitle">
-        <settingConfig type="numeric" />
+        <settingConfig type="alphaNumeric" />
     </setting>
-    <setting propertyKey="@Properties.TimeFont" title="@Strings.TimeFontTitle">
+    <!-- <setting propertyKey="@Properties.TimeFont" title="@Strings.TimeFontTitle">
         <settingConfig type="list">
             <listEntry value="0">@Strings.TimeFont_01</listEntry>
             <listEntry value="1">@Strings.TimeFont_02</listEntry>
             <listEntry value="2">@Strings.TimeFont_03</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.DateColor" title="@Strings.DateColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.DateColor" title="@Strings.DateColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -57,8 +57,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.HRColor" title="@Strings.HRColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.HRColor" title="@Strings.HRColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -75,8 +75,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.ConnectColor" title="@Strings.ConnectColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.ConnectColor" title="@Strings.ConnectColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -93,8 +93,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.HourColor" title="@Strings.HourColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.HourColor" title="@Strings.HourColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -111,8 +111,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.MinuteColor" title="@Strings.MinuteColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.MinuteColor" title="@Strings.MinuteColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -129,8 +129,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.SecColor" title="@Strings.SecColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.SecColor" title="@Strings.SecColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -147,8 +147,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.BodyBattColor" title="@Strings.BodyBattColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.BodyBattColor" title="@Strings.BodyBattColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -165,8 +165,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.AltitudeColor" title="@Strings.AltitudeColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.AltitudeColor" title="@Strings.AltitudeColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -183,8 +183,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.StepsColor" title="@Strings.StepsColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.StepsColor" title="@Strings.StepsColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -201,8 +201,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.RecoveryColor" title="@Strings.RecoveryColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.RecoveryColor" title="@Strings.RecoveryColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -219,8 +219,8 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
-    <setting propertyKey="@Properties.BattColor" title="@Strings.BattColorTitle">
+    </setting> -->
+    <!-- <setting propertyKey="@Properties.BattColor" title="@Strings.BattColorTitle">
         <settingConfig type="list">
             <listEntry value="0xFFFFFF">@Strings.ColorWhite</listEntry>
             <listEntry value="0xAAAAAA">@Strings.ColorLightGray</listEntry>
@@ -237,5 +237,5 @@
             <listEntry value="0xAA00FF">@Strings.ColorPurple</listEntry>
             <listEntry value="0xFF00FF">@Strings.ColorPink</listEntry>
         </settingConfig>
-    </setting>
+    </setting> -->
 </settings>
