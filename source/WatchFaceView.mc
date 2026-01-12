@@ -58,7 +58,6 @@ class WatchFaceView extends WatchUi.WatchFace {
     // get data that isn't updated frequently
     _steps = _dataFields.getSteps();
     _battery = _dataFields.getBattery();
-    //_pressure = _dataFields.getBarometricPressure();
     _recoveryTime = _dataFields.getRecoveryTime();
     getSunInfo();
 
@@ -89,7 +88,6 @@ class WatchFaceView extends WatchUi.WatchFace {
     // get data that isn't updated frequently
     _steps = _dataFields.getSteps();
     _battery = _dataFields.getBattery();
-    //_pressure = _dataFields.getBarometricPressure();
     _recoveryTime = _dataFields.getRecoveryTime();
     getSunInfo();
 
@@ -200,11 +198,11 @@ class WatchFaceView extends WatchUi.WatchFace {
     dc.drawText(_devCenter + 5, 170, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // seconds
-    dc.drawText(350, 195, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(350, 196, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // steps
     dc.drawText(_devCenter - 10, 279, _iconFont, "s", Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(170, 271, Graphics.FONT_SMALL, _dataFields.getSteps(), Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(170, 271, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_RIGHT);
 
     // recovery time
     dc.drawText(_devCenter - 10, 335, _iconFont, "r", Graphics.TEXT_JUSTIFY_RIGHT);
@@ -212,7 +210,7 @@ class WatchFaceView extends WatchUi.WatchFace {
 
     // heart rate
     dc.drawText(_devCenter + 10, 279, _iconFont, "h", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter + 55, 271, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + 55, 271, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_LEFT);
     
     // battery
     dc.drawText(_devCenter + 10, 335, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
@@ -282,7 +280,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     }
 
     var i = 0;
-    var gapSize = _devSize / 8.0;
+    var gapSize = _devSize / 16.0;
 
     dc.setColor(Graphics.COLOR_DK_GRAY, -1);
     do {
