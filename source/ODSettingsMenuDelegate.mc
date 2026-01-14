@@ -11,8 +11,13 @@ class ODSettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
         var id = item.getId();
 
         if (item instanceof ToggleMenuItem) {
-            (new Settings()).setStorageValue(id, item.isEnabled());
-            return;
+            if (id.equals("ShowBattLog")) {
+                ShowBatteryHistory = item.isEnabled();
+                return;
+            }
+
+            var settings = new Settings();
+            settings.setStorageValue(id, item.isEnabled());
         }
     }
 
