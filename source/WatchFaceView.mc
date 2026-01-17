@@ -19,6 +19,42 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _recoveryTime;
   private var _steps;
   private var _battery;
+  
+  // Cached scaled coordinates
+  private var _scale;
+  private var _pos_date_y;
+  private var _pos_sunrise_y;
+  private var _pos_sunrise_offset_x;
+  private var _pos_sunrise_text_y;
+  private var _pos_phone_x;
+  private var _pos_phone_y;
+  private var _pos_time_y;
+  private var _pos_time_offset_x;
+  private var _pos_time_center_offset_x;
+  private var _pos_seconds_x;
+  private var _pos_seconds_y;
+  private var _pos_steps_icon_y;
+  private var _pos_steps_text_x;
+  private var _pos_steps_text_y;
+  private var _pos_recovery_icon_y;
+  private var _pos_recovery_text_x;
+  private var _pos_recovery_text_y;
+  private var _pos_hr_offset_x;
+  private var _pos_hr_text_offset_x;
+  private var _pos_batt_offset_x;
+  private var _pos_batt_text_offset_x;
+  // DND mode coordinates
+  private var _pos_dnd_phone_y;
+  private var _pos_dnd_date_y;
+  private var _pos_dnd_hr_icon_y;
+  private var _pos_dnd_hr_text_offset_x;
+  private var _pos_dnd_hr_text_y;
+  private var _pos_dnd_batt_icon_y;
+  private var _pos_dnd_batt_text_offset_x;
+  private var _pos_dnd_batt_text_y;
+  // Battery history
+  private var _pos_history_start_y;
+  private var _pos_history_line_height;
 
   function initialize() {
     //System.println("view.initialize");
@@ -37,14 +73,62 @@ class WatchFaceView extends WatchUi.WatchFace {
     }
     
     _settings.loadSettings();
-    _iconFont = WatchUi.loadResource(Rez.Fonts.icons);
-    _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium);
   }
 
   function onLayout(dc as Dc) as Void {
     //System.println("onLayout");
     _devSize = dc.getWidth();
     _devCenter = _devSize / 2;
+
+    if (_devSize == 454) {
+      _iconFont = WatchUi.loadResource(Rez.Fonts.icons_36);
+      _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_96);
+    } else {
+      _iconFont = WatchUi.loadResource(Rez.Fonts.icons_30);
+      _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_82);
+    }
+
+    // Calculate scale factor based on device resolution (FR965 is 454x454, FR165 is 390x390)
+    _scale = _devSize / 454.0;
+    
+    // Pre-calculate all scaled coordinates
+    _pos_date_y = scale(30);
+    _pos_sunrise_y = scale(95);
+    _pos_sunrise_offset_x = scale(35);
+    _pos_sunrise_text_y = scale(90);
+    _pos_phone_x = scale(65);
+    _pos_phone_y = scale(185);
+    _pos_time_y = scale(170);
+    _pos_seconds_x = scale(350);
+    _pos_seconds_y = scale(196);
+    _pos_steps_icon_y = scale(279);
+    _pos_steps_text_x = scale(170);
+    _pos_steps_text_y = scale(271);
+    _pos_recovery_icon_y = scale(335);
+    _pos_recovery_text_x = scale(170);
+    _pos_recovery_text_y = scale(330);
+    _pos_hr_offset_x = scale(279);
+    _pos_hr_text_offset_x = scale(55);
+    _pos_batt_offset_x = scale(335);
+    _pos_batt_text_offset_x = scale(55);
+    
+    // Time offset coordinates
+    _pos_time_offset_x = scale(5);
+    _pos_time_center_offset_x = scale(10);
+    
+    // DND mode coordinates
+    _pos_dnd_phone_y = scale(55);
+    _pos_dnd_date_y = scale(105);
+    _pos_dnd_hr_icon_y = scale(302);
+    _pos_dnd_hr_text_offset_x = scale(60);
+    _pos_dnd_hr_text_y = scale(295);
+    _pos_dnd_batt_icon_y = scale(300);
+    _pos_dnd_batt_text_offset_x = scale(50);
+    _pos_dnd_batt_text_y = scale(295);
+    
+    // Battery history
+    _pos_history_start_y = scale(50);
+    _pos_history_line_height = scale(40);
   }
 
   // Called when this View is brought to the foreground.
@@ -127,10 +211,10 @@ class WatchFaceView extends WatchUi.WatchFace {
         return;
       }
       
-      var y = 50;
+      var y = _pos_history_start_y;
       for (var i = 0; i < entries.size(); i++) {
         dc.drawText(_devCenter, y, Graphics.FONT_TINY, entries[i], Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-        y += 40;
+        y += _pos_history_line_height;
       }
       
       return;
@@ -148,26 +232,26 @@ class WatchFaceView extends WatchUi.WatchFace {
 
       // phone connected
       if (deviceSettings.phoneConnected) {
-        dc.drawText(_devCenter, 55, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        dc.drawText(_devCenter, _pos_dnd_phone_y, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
       }
       
       // date
       var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-      dc.drawText(_devCenter, 105, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+      dc.drawText(_devCenter, _pos_dnd_date_y, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
       
       // hour
-      dc.drawText(_devCenter - 5, _devCenter, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(_devCenter - _pos_time_offset_x, _devCenter, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
       
       // minute
-      dc.drawText(_devCenter + 5, _devCenter, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(_devCenter + _pos_time_offset_x, _devCenter, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
 
       // heart rate
-      dc.drawText(_devCenter - 10, 302, _iconFont, "h", Graphics.TEXT_JUSTIFY_RIGHT);
-      dc.drawText(_devCenter - 60, 295, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_RIGHT);
+      dc.drawText(_devCenter - _pos_time_center_offset_x, _pos_dnd_hr_icon_y, _iconFont, "h", Graphics.TEXT_JUSTIFY_RIGHT);
+      dc.drawText(_devCenter - _pos_dnd_hr_text_offset_x, _pos_dnd_hr_text_y, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_RIGHT);
       
       // battery
-      dc.drawText(_devCenter + 10, 300, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
-      dc.drawText(_devCenter + 50, 295, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
+      dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_dnd_batt_icon_y, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
+      dc.drawText(_devCenter + _pos_dnd_batt_text_offset_x, _pos_dnd_batt_text_y, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
 
       // lines for positioning   
       drawGrid(dc);
@@ -179,48 +263,52 @@ class WatchFaceView extends WatchUi.WatchFace {
     
     // date
     var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-    dc.drawText(_devCenter, 30, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(_devCenter, _pos_date_y, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
 
     // sunrise and sunset
-    dc.drawText(_devCenter, 95, _iconFont, "S", Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(_devCenter - 35, 90, Graphics.FONT_SMALL, _sunriseText, Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(_devCenter + 35, 90, Graphics.FONT_SMALL, _sunsetText, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter, _pos_sunrise_y, _iconFont, "S", Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(_devCenter - _pos_sunrise_offset_x, _pos_sunrise_text_y, Graphics.FONT_SMALL, _sunriseText, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter + _pos_sunrise_offset_x, _pos_sunrise_text_y, Graphics.FONT_SMALL, _sunsetText, Graphics.TEXT_JUSTIFY_LEFT);
 
     // phone connected
     if (deviceSettings.phoneConnected) {
-      dc.drawText(65, 185, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT);
+      dc.drawText(_pos_phone_x, _pos_phone_y, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT);
     }
 
     // hour
-    dc.drawText(_devCenter - 5, 170, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter - _pos_time_offset_x, _pos_time_y, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
       
     // minute
-    dc.drawText(_devCenter + 5, 170, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + _pos_time_offset_x, _pos_time_y, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // seconds
-    dc.drawText(350, 196, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_pos_seconds_x, _pos_seconds_y, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
 
     // steps
-    dc.drawText(_devCenter - 10, 279, _iconFont, "s", Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(170, 271, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter - _pos_time_center_offset_x, _pos_steps_icon_y, _iconFont, "s", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_pos_steps_text_x, _pos_steps_text_y, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_RIGHT);
 
     // recovery time
-    dc.drawText(_devCenter - 10, 335, _iconFont, "r", Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(170, 330, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter - _pos_time_center_offset_x, _pos_recovery_icon_y, _iconFont, "r", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_pos_recovery_text_x, _pos_recovery_text_y, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_RIGHT);
 
     // heart rate
-    dc.drawText(_devCenter + 10, 279, _iconFont, "h", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter + 55, 271, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_hr_offset_x, _iconFont, "h", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + _pos_hr_text_offset_x, _pos_steps_text_y, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_LEFT);
     
     // battery
-    dc.drawText(_devCenter + 10, 335, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter + 55, 330, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_batt_offset_x, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + _pos_batt_text_offset_x, _pos_recovery_text_y, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
 
     // lines for positioning
     drawGrid(dc);
   }
 
-  // Get sunrise and sunset times based on the current location.
+  // Helper function to scale a coordinate value based on device resolution.
+  private function scale(value as Number) as Number {
+    return (value * _scale).toNumber();
+  }
+
   // If the location is not available, use the last known location from storage.
   // Also check if it's day or night based on the current time and sunrise/sunset times.  
   private function getSunInfo() {

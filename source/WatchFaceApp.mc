@@ -43,7 +43,7 @@ class WatchFaceApp extends Application.AppBase {
 
     // New app settings have been received, so trigger a UI update.
     // This applies to settings via ConnectIQ, not on-device settings.
-    // When using ODS it looks like the app gets restarted.
+    // When using ODS it looks like the app gets restarted, but not in the simulator.
     function onSettingsChanged() as Void {
         //System.println("onSettingsChanged");
         if (_faceView != null) {
