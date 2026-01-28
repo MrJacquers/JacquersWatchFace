@@ -1,6 +1,8 @@
 <fonts>
     <font id="icons_36" filename="icons_36.fnt" antialias="true" filter="BSbehsr" />
     <font id="icons_30" filename="icons_30.fnt" antialias="true" filter="BSbehsr" />
+    <font id="icons_20" filename="icons_20.fnt" antialias="true" filter="BSbehsr" />
     <font id="oxanium_96" filename="oxanium_96.fnt" antialias="true" filter="0123456789:" />
     <font id="oxanium_82" filename="oxanium_82.fnt" antialias="true" filter="0123456789:" />
+    <font id="oxanium_54" filename="oxanium_54.fnt" antialias="true" filter="0123456789:" />
 </fonts>

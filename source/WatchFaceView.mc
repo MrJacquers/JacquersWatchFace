@@ -81,11 +81,17 @@ class WatchFaceView extends WatchUi.WatchFace {
     _devCenter = _devSize / 2;
 
     if (_devSize == 454) {
+      // FR965
       _iconFont = WatchUi.loadResource(Rez.Fonts.icons_36);
       _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_96);
-    } else {
+    } else if (_devSize == 390) {
+      // FR165M
       _iconFont = WatchUi.loadResource(Rez.Fonts.icons_30);
       _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_82);
+    } else {
+      // FR255M
+      _iconFont = WatchUi.loadResource(Rez.Fonts.icons_20);
+      _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_54);
     }
 
     // Calculate scale factor based on device resolution (FR965 is 454x454, FR165 is 390x390)
@@ -182,18 +188,11 @@ class WatchFaceView extends WatchUi.WatchFace {
   // Updates the View:
   // Called once a minute in low power mode.
   // Called every second in high power mode, e.g. after a gesture, for a couple of seconds.
+  // It looks like this isn't called in hidden / low power mode when AOD is off on Amoled devices.
+  // https://developer.garmin.com/connect-iq/connect-iq-faq/how-do-i-make-a-watch-face-for-amoled-products/
   function onUpdate(dc as Dc) as Void {
     //System.println("onUpdate");
     clearScreen(dc);
-
-    if (_hidden || _lowPwrMode) {
-      //System.println("low power mode");
-      // it looks like onUpdate isn't called in hidden / low power mode when AOD is off, so this isn't needed.
-      // if (_settings.battLogEnabled) {
-      //   _dataFields.getBattery();
-      // }
-      return;
-    }
 
     if (ShowBatteryHistory) {
       dc.setColor(_isDay ? _settings.textColorDay : _settings.textColorNight, _settings.bgColor);
@@ -223,43 +222,23 @@ class WatchFaceView extends WatchUi.WatchFace {
     // get the device settings
     var deviceSettings = System.getDeviceSettings();
 
-    // Get the date info, the strings will be localized.
+    // get the date info, the strings will be localized.
     var dateInfo = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 
     // do not disturb / sleep mode display
     if (deviceSettings.doNotDisturb) {
       dc.setColor(_settings.textColorSleep, _settings.bgColor);
-
-      // phone connected
-      if (deviceSettings.phoneConnected) {
-        dc.drawText(_devCenter, _pos_dnd_phone_y, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-      }
-      
-      // date
-      var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-      dc.drawText(_devCenter, _pos_dnd_date_y, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
-      
-      // hour
-      dc.drawText(_devCenter - _pos_time_offset_x, _devCenter, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
-      
-      // minute
-      dc.drawText(_devCenter + _pos_time_offset_x, _devCenter, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-
-      // heart rate
-      dc.drawText(_devCenter - _pos_time_center_offset_x, _pos_dnd_hr_icon_y, _iconFont, "h", Graphics.TEXT_JUSTIFY_RIGHT);
-      dc.drawText(_devCenter - _pos_dnd_hr_text_offset_x, _pos_dnd_hr_text_y, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_RIGHT);
-      
-      // battery
-      dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_dnd_batt_icon_y, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
-      dc.drawText(_devCenter + _pos_dnd_batt_text_offset_x, _pos_dnd_batt_text_y, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
-
-      // lines for positioning   
-      drawGrid(dc);
+      drawLowPowerMode(dc, deviceSettings, dateInfo);      
       return;
     }
 
     // foreground color
     dc.setColor(_isDay ? _settings.textColorDay : _settings.textColorNight, _settings.bgColor);
+
+    if (_lowPwrMode) {
+      drawLowPowerMode(dc, deviceSettings, dateInfo);
+      return;
+    }
     
     // date
     var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
@@ -299,6 +278,34 @@ class WatchFaceView extends WatchUi.WatchFace {
     // battery
     dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_batt_offset_x, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
     dc.drawText(_devCenter + _pos_batt_text_offset_x, _pos_recovery_text_y, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
+
+    // lines for positioning
+    drawGrid(dc);
+  }
+
+  private function drawLowPowerMode(dc as Dc, deviceSettings as DeviceSettings, dateInfo as Gregorian.Info) as Void {
+    // phone connected
+    if (deviceSettings.phoneConnected) {
+      dc.drawText(_devCenter, _pos_dnd_phone_y, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+    }
+      
+    // date
+    var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
+    dc.drawText(_devCenter, _pos_dnd_date_y, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+      
+    // hour
+    dc.drawText(_devCenter - _pos_time_offset_x, _devCenter, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+      
+    // minute
+    dc.drawText(_devCenter + _pos_time_offset_x, _devCenter, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+
+    // heart rate
+    dc.drawText(_devCenter - _pos_time_center_offset_x, _pos_dnd_hr_icon_y, _iconFont, "h", Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_devCenter - _pos_dnd_hr_text_offset_x, _pos_dnd_hr_text_y, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_RIGHT);
+      
+    // battery
+    dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_dnd_batt_icon_y, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_devCenter + _pos_dnd_batt_text_offset_x, _pos_dnd_batt_text_y, Graphics.FONT_SMALL, _battery, Graphics.TEXT_JUSTIFY_LEFT);
 
     // lines for positioning
     drawGrid(dc);
