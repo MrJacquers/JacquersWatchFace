@@ -8,20 +8,13 @@ class ODSettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 
     function onSelect(item) {
-        var id = item.getId();
-
         if (item instanceof ToggleMenuItem) {
-            if (id.equals("ShowBattLog")) {
-                ShowBatteryHistory = item.isEnabled();
-                return;
-            }
-
-            var settings = new Settings();
-            settings.setStorageValue(id, item.isEnabled());
+            Application.Properties.setValue(item.getId().toString(), item.isEnabled());
         }
     }
 
     function onBack() {
         WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+        Application.getApp().method(:refreshWatchUi).invoke(true, false);
     }
 }

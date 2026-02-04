@@ -1,9 +1,19 @@
 import Toybox.Lang;
+import Toybox.System;
 
 public class Utils {
+  (:debug)
+  static function println(message as String) {
+    System.println(message);
+  }
+
+  (:release)
+  static function println(message as String) {
+    // No operation in release mode
+  }
+
   static function splitString(string, separator) as Array<String> {
     var tokens = [];
-
     var found = string.find(separator);
 
     while (found != null) {

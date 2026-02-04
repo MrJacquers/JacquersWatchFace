@@ -5,6 +5,9 @@
     <property id="TextColorDay" type="string">0x329600</property>
     <property id="TextColorNight" type="string">0xC86400</property>
     <property id="TextColorSleep" type="string">0xC86400</property>
+    <property id="ShowGrid" type="boolean">false</property>
+    <property id="BatteryLogEnabled" type="boolean">true</property>
+    <property id="ShowBatteryLog" type="boolean">false</property>
     <!-- <property id="TimeFont" type="number">0</property> -->
     <!-- <property id="DateColor" type="number">0xAAAAAA</property> -->
     <!-- <property id="HRColor" type="number">0xFF5500</property> -->

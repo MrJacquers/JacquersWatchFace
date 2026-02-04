@@ -19,12 +19,12 @@ class Settings {
     //var stepsColor;
     //var recoveryColor;
     //var battColor;
-
     var showGrid;
-    var battLogEnabled = false;
+    var batteryLevel = 0;
+    var batteryLogEnabled = false;
+    var showBatteryLog = false;
 
     function loadSettings() {
-        // Set via ConnectIQ App.
         // https://developer.garmin.com/connect-iq/core-topics/properties-and-app-settings/
         // https://forums.garmin.com/developer/connect-iq/w/wiki/4/new-developer-faq#settings-crash
         if (Toybox.Application has :Properties) {
@@ -36,7 +36,7 @@ class Settings {
             //timeFont = Application.Properties.getValue("TimeFont");
             //dateColor = Application.Properties.getValue("DateColor");
             //hrColor = Application.Properties.getValue("HRColor");
-            //connectColor = Application.Properties.getValue("ConnectColor");            
+            //connectColor = Application.Properties.getValue("ConnectColor");
             //hourColor = Application.Properties.getValue("HourColor");
             //minuteColor = Application.Properties.getValue("MinuteColor");
             //secColor = Application.Properties.getValue("SecColor");
@@ -45,15 +45,20 @@ class Settings {
             //stepsColor = Application.Properties.getValue("StepsColor");
             //recoveryColor = Application.Properties.getValue("RecoveryColor");
             //battColor = Application.Properties.getValue("BattColor");
+
+            // On-device settings: accessible via select watch face -> customize
+            showGrid = Application.Properties.getValue("ShowGrid");
+            batteryLogEnabled = Application.Properties.getValue("BatteryLogEnabled");
+            showBatteryLog = Application.Properties.getValue("ShowBatteryLog");
         }
 
-        // On-device settings, accessible via select watch face edit menu.
+        // Load persisted values
         if (Toybox.Application has :Storage) {
-            showGrid = getStorageValue("GridEnabled", false);
-            battLogEnabled = getStorageValue("BattLogEnabled", false);
+            batteryLevel = Settings.getStorageValue("BatteryLevel", 0);
         }
     }
 
+    // Using storage to persist data between app sessions, e.g. battery level, history and position for sun info.
     static function getStorageValue(name, defaultValue) {
         var value = Storage.getValue(name);
         if (value == null || value.equals("") || value.equals("null")) {

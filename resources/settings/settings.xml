@@ -33,6 +33,15 @@
     <setting propertyKey="@Properties.TextColorSleep" title="@Strings.TextColorSleepTitle">
         <settingConfig type="alphaNumeric" />
     </setting>
+    <setting propertyKey="@Properties.ShowGrid" title="@Strings.ShowGridTitle">
+        <settingConfig type="boolean" />
+    </setting>
+    <setting propertyKey="@Properties.BatteryLogEnabled" title="@Strings.BatteryLogEnabledTitle">
+        <settingConfig type="boolean" />
+    </setting>
+    <setting propertyKey="@Properties.ShowBatteryLog" title="@Strings.ShowBatteryLogTitle">
+        <settingConfig type="boolean" />
+    </setting>
     <!-- <setting propertyKey="@Properties.TimeFont" title="@Strings.TimeFontTitle">
         <settingConfig type="list">
             <listEntry value="0">@Strings.TimeFont_01</listEntry>

@@ -3,7 +3,13 @@ import Toybox.Time.Gregorian;
 import Toybox.Complications;
 
 class DataFields {
-    var battLogEnabled = false;
+    var batteryLevel = 0.0;
+    var batteryLogEnabled = false;
+
+    var isDay = true;
+    var sunriseText = "00:00";
+    var sunsetText = "00:00";
+
     //private var _bodyBattery;
     //private var _recoveryTime;
     private var _altitudeId;
@@ -11,9 +17,14 @@ class DataFields {
     private var _recoveryTimeId;
     private var _seaLevelPressureId;
 
+    function initialize() {
+        getComplicationIds();
+        batteryLevel = getBatteryFromHistory();
+    }
+
     // https://developer.garmin.com/connect-iq/core-topics/complications/
     // https://developer.garmin.com/connect-iq/api-docs/Toybox/Complications.html
-    function registerComplications() {
+    function getComplicationIds() {
         if (Toybox has :Complications == false) {
             return;
         }
@@ -27,9 +38,6 @@ class DataFields {
 
     // not used, keeping as example
     function subscribeComplications() {
-        //_bodyBattery = null;
-        //_recoveryTime = null;
-
         if (_bodyBatteryId != null) {
             Complications.subscribeToUpdates(_bodyBatteryId);
         }
@@ -41,9 +49,6 @@ class DataFields {
 
     // not used, keeping as example
     function unsubscribeComplications() {
-        //_bodyBattery = null;
-        //_recoveryTime = null;
-
         if (_bodyBatteryId != null) {
             Complications.unsubscribeFromUpdates(_bodyBatteryId);
         }
@@ -55,17 +60,17 @@ class DataFields {
 
     // not used, keeping as example
     function onComplicationChanged(id as Complications.Id) as Void {
-        //System.println("onComplicationChanged");
-        //var comp = Complications.getComplication(id);
+        Utils.println("onComplicationChanged");
+        var comp = Complications.getComplication(id);
 
         if (id == _bodyBatteryId) {
-            //System.println("body battery updated: " + comp.value);
+            Utils.println("body battery updated: " + comp.value);
             //_bodyBattery = comp.value;
             return;
         }
 
         if (id == _recoveryTimeId) {
-            //System.println("recovery time updated: " + comp.value);
+            Utils.println("recovery time updated: " + comp.value);
             //_recoveryTime = comp.value;
             return;
         }
@@ -111,7 +116,6 @@ class DataFields {
         var comp = Complications.getComplication(_seaLevelPressureId);
         if (comp.value != null) {
             var pressure = comp.value;
-            // Format as integer with no decimals
             if (pressure instanceof Number || pressure instanceof Float || pressure instanceof Double) {
                 return pressure.format("%.0f");
             }
@@ -121,16 +125,16 @@ class DataFields {
     }
 
     function getBattery() {
-        //System.println("getBattery");
         var battery = System.getSystemStats().battery;
 
-        if (battLogEnabled && battery != BatteryLevel) {
-            // update the global battery level
-            BatteryLevel = battery;
+        if (batteryLogEnabled && battery != batteryLevel) {
+            // update the battery level
+            Utils.println("Battery changed from " + batteryLevel + " to " + battery);
+            batteryLevel = battery;
 
             // get the battery level history
             var history = Settings.getStorageValue("BatteryHistory", "");
-            //System.println("history: " + history);
+            Utils.println("history: " + history);
 
             // add the battery level to the history
             var dateInfo = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
@@ -148,22 +152,26 @@ class DataFields {
         return Lang.format("$1$%", [battery.format("%d")]);
     }
 
+    // get the last saved battery level
     function getBatteryFromHistory() {
         var batteryHistory = Settings.getStorageValue("BatteryHistory", "");
         var entries = Utils.splitString(batteryHistory, ",");
-        if (entries.size() == 0) {
-            return 0;
+
+        if (entries.size() > 0) {
+            var last = entries[entries.size() - 1];
+            var parts = Utils.splitString(last, " ");
+            return parts[parts.size() - 1].toFloat();
         }
-        var last = entries[entries.size() - 1];
-        var parts = Utils.splitString(last, " ");
-        return parts[parts.size() - 1].toNumber();
+
+        return 0;
     }
 
     function saveHistory(history as String, storageKey as String) {
         // split the history into entries
         var entries = Utils.splitString(history, ",");
-        //System.println("entries: " + entries.toString());
+        Utils.println("saveHistory: " + entries.toString());
 
+        // only keep the last x entries
         var maxToKeep = 10;
         if (entries.size() > maxToKeep) {
             history = "";
@@ -174,5 +182,46 @@ class DataFields {
 
         // save the history
         Settings.setStorageValue(storageKey, history);
+    }
+
+    // If the location is not available, use the last known location from storage.
+    // Check if it's day or night based on the current time and sunrise/sunset times.
+    function getSunInfo() {
+        var now = Time.now();
+        var location = Activity.getActivityInfo().currentLocation;
+
+        if (location == null) {
+            // get last known location from storage
+            var latitude = Settings.getStorageValue("LastLocationLat", null);
+            var longitude = Settings.getStorageValue("LastLocationLon", null);
+            if (latitude != null && longitude != null) {
+                location = new Position.Location({ :latitude => latitude, :longitude => longitude, :format => :degrees });
+            }
+        }
+
+        if (location != null) {
+            // save in storage
+            var locationInfo = location.toDegrees();
+            Settings.setStorageValue("LastLocationLat", locationInfo[0]);
+            Settings.setStorageValue("LastLocationLon", locationInfo[1]);
+
+            // get sunrise time
+            var sunrise = Weather.getSunrise(location, now);
+            var sunriseInfo = Gregorian.info(sunrise, Time.FORMAT_MEDIUM);
+            sunriseText = sunriseInfo.hour.format("%02d") + ":" + sunriseInfo.min.format("%02d");
+
+            // get sunset time
+            var sunset = Weather.getSunset(location, now);
+            var sunsetInfo = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
+            sunsetText = sunsetInfo.hour.format("%02d") + ":" + sunsetInfo.min.format("%02d");
+
+            // check if it's day or night
+            isDay = now.value() >= sunrise.value() && now.value() <= sunset.value();
+            return;
+        }
+
+        // no location info, use default values
+        var dateInfo = Gregorian.info(now, Time.FORMAT_SHORT);
+        isDay = dateInfo.hour > 5 && dateInfo.hour < 18;
     }
 }

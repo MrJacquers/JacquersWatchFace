@@ -4,37 +4,41 @@ import Toybox.Complications;
 
 class WatchDelegate extends WatchFaceDelegate {
 
-	function initialize() {
-		WatchFaceDelegate.initialize();
-	}
+  function initialize() {
+    WatchFaceDelegate.initialize();
+  }
 
-  // Handle touch long press events.
+  // Handle long press touch events.
   function onPress(clickEvent) as Boolean {
-    if (ShowBatteryHistory) {
-      ShowBatteryHistory = false;
+    // Check if we are showing battery log
+    var showBatteryLog = Application.Properties.getValue("ShowBatteryLog") as Boolean;
+    if (showBatteryLog) {
+      Application.Properties.setValue("ShowBatteryLog", false);
+      Application.getApp().method(:refreshWatchUi).invoke(true, true);
       return true;
     }
 
     var coords = clickEvent.getCoordinates();
     var x = coords[0];
     var y = coords[1];
-    //System.println("onPress x:" + x + ",y:" + y);
+    Utils.println("onPress x:" + x + ",y:" + y);
 
     if (x < 227 && y < 227) {
-      System.println("onPress: altitude");
+      Utils.println("onPress: altitude");
       //Complications.exitTo(new Complications.Id(Complications.COMPLICATION_TYPE_ALTITUDE));
       return true;
     }
 
     if (x > 227 && y < 227) {
-      System.println("onPress: sea level pressure");
+      Utils.println("onPress: sea level pressure");
       //Complications.exitTo(new Complications.Id(Complications.COMPLICATION_TYPE_SEA_LEVEL_PRESSURE));
       return true;
     }
 
     if (y > 227) {
-      System.println("onPress: battery");
-      ShowBatteryHistory = true;
+      Utils.println("onPress: battery");
+      Application.Properties.setValue("ShowBatteryLog", true);
+      Application.getApp().method(:refreshWatchUi).invoke(true, true);
       return true;
     }
 
@@ -43,6 +47,6 @@ class WatchDelegate extends WatchFaceDelegate {
 
   // Handle a partial update exceeding the power budget.
   function onPowerBudgetExceeded(powerInfo as WatchUi.WatchFacePowerInfo) as Void {
-    System.println("onPowerBudgetExceeded: Allowed " + powerInfo.executionTimeLimit + " but avg was " + powerInfo.executionTimeAverage);
+    Utils.println("onPowerBudgetExceeded: Allowed " + powerInfo.executionTimeLimit + " but avg was " + powerInfo.executionTimeAverage);
   }
 }
