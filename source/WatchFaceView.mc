@@ -15,38 +15,85 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _dataFields;
   private var _recoveryTime;
   private var _steps;
-
-  // Cached scaled coordinates
-  private var _scale;
-  private var _pos_date_y;
-  private var _pos_sunrise_y;
-  private var _pos_sunrise_offset_x;
-  private var _pos_sunrise_text_y;
-  private var _pos_phone_x;
-  private var _pos_phone_y;
-  private var _pos_time_y;
-  private var _pos_time_offset_x;
-  private var _pos_time_center_offset_x;
-  private var _pos_seconds_x;
-  private var _pos_seconds_y;
-  private var _pos_steps_icon_y;
-  private var _pos_steps_text_x;
-  private var _pos_steps_text_y;
-  private var _pos_recovery_icon_y;
-  private var _pos_recovery_text_x;
-  private var _pos_recovery_text_y;
-  private var _pos_hr_offset_x;
-  private var _pos_hr_text_offset_x;
-  private var _pos_batt_offset_x;
-  private var _pos_batt_text_offset_x;
+  // Date
+  private var _date_x;
+  private var _date_y;
+  private var _date_align;
+  // Sunrise/Sunset
+  private var _sunrise_icon_x;
+  private var _sunrise_icon_y;
+  private var _sunrise_icon_align;
+  private var _sunrise_text_x;
+  private var _sunrise_text_y;
+  private var _sunrise_text_align;
+  private var _sunset_text_x;
+  private var _sunset_text_y;
+  private var _sunset_text_align;
+  // Phone
+  private var _phone_x;
+  private var _phone_y;
+  private var _phone_align;
+  // Time
+  private var _hour_x;
+  private var _hour_y;
+  private var _hour_align;
+  private var _minute_x;
+  private var _minute_y;
+  private var _minute_align;
+  // Seconds
+  private var _seconds_x;
+  private var _seconds_y;
+  private var _seconds_align;
+  // Steps
+  private var _steps_icon_x;
+  private var _steps_icon_y;
+  private var _steps_icon_align;
+  private var _steps_text_x;
+  private var _steps_text_y;
+  private var _steps_text_align;
+  // Recovery
+  private var _recovery_icon_x;
+  private var _recovery_icon_y;
+  private var _recovery_icon_align;
+  private var _recovery_text_x;
+  private var _recovery_text_y;
+  private var _recovery_text_align;
+  // Heart Rate
+  private var _hr_icon_x;
+  private var _hr_icon_y;
+  private var _hr_icon_align;
+  private var _hr_text_x;
+  private var _hr_text_y;
+  private var _hr_text_align;
+  // Battery
+  private var _batt_icon_x;
+  private var _batt_icon_y;
+  private var _batt_icon_align;
+  private var _batt_text_x;
+  private var _batt_text_y;
+  private var _batt_text_align;
   // DND mode coordinates
-  private var _pos_dnd_phone_y;
-  private var _pos_dnd_date_y;
-  private var _pos_dnd_batt_icon_y;
-  private var _pos_dnd_batt_text_y;
+  private var _dnd_phone_x;
+  private var _dnd_phone_y;
+  private var _dnd_phone_align;
+  private var _dnd_date_x;
+  private var _dnd_date_y;
+  private var _dnd_date_align;
+  private var _dnd_hour_x;
+  private var _dnd_hour_y;
+  private var _dnd_hour_align;
+  private var _dnd_minute_x;
+  private var _dnd_minute_y;
+  private var _dnd_minute_align;
+  private var _dnd_batt_icon_x;
+  private var _dnd_batt_icon_y;
+  private var _dnd_batt_icon_align;
+  private var _dnd_batt_text_x;
+  private var _dnd_batt_text_y;
+  private var _dnd_batt_text_align;
   // Battery history
-  private var _pos_history_start_y;
-  private var _pos_history_line_height;
+  private var _history_start_y;
+  private var _history_line_height;
 
   function initialize() {
     Utils.println("view.initialize");
@@ -62,56 +109,151 @@ class WatchFaceView extends WatchUi.WatchFace {
     _devCenter = _devSize / 2;
 
     if (_devSize == 454) {
-      // FR965
+      // FR965 (454x454)
       _iconFont = WatchUi.loadResource(Rez.Fonts.icons_36);
       _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_96);
-    } else if (_devSize == 390) {
-      // FR165M
-      _iconFont = WatchUi.loadResource(Rez.Fonts.icons_30);
-      _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_82);
-    } else {
-      // FR255M
+      // Date
+      _date_x = _devCenter;
+      _date_y = 30;
+      // Sunrise/Sunset
+      _sunrise_icon_x = _devCenter;
+      _sunrise_icon_y = 95;
+      _sunrise_text_x = _devCenter - 35;
+      _sunrise_text_y = 90;
+      _sunset_text_x = _devCenter + 35;
+      _sunset_text_y = 90;
+      // Phone
+      _phone_x = 65;
+      _phone_y = 185;
+      // Time
+      _hour_x = _devCenter - 5;
+      _hour_y = 170;
+      _minute_x = _devCenter + 5;
+      _minute_y = 170;
+      // Seconds
+      _seconds_x = 350;
+      _seconds_y = 195;
+      // Steps
+      _steps_icon_x = _devCenter - 10;
+      _steps_icon_y = 279;
+      _steps_text_x = 170;
+      _steps_text_y = 271;
+      // Recovery
+      _recovery_icon_x = _devCenter - 10;
+      _recovery_icon_y = 335;
+      _recovery_text_x = 170;
+      _recovery_text_y = 330;
+      // Heart Rate
+      _hr_icon_x = _devCenter + 10;
+      _hr_icon_y = 279;
+      _hr_text_x = _devCenter + 55;
+      _hr_text_y = 271;
+      // Battery
+      _batt_icon_x = _devCenter + 10;
+      _batt_icon_y = 335;
+      _batt_text_x = _devCenter + 55;
+      _batt_text_y = 330;
+      // DND mode
+      _dnd_phone_x = _devCenter;
+      _dnd_phone_y = 55;
+      _dnd_date_x = _devCenter;
+      _dnd_date_y = 105;
+      _dnd_hour_x = _devCenter - 5;
+      _dnd_hour_y = _devCenter;
+      _dnd_minute_x = _devCenter + 5;
+      _dnd_minute_y = _devCenter;
+      _dnd_batt_icon_x = _devCenter - 2;
+      _dnd_batt_icon_y = 300;
+      _dnd_batt_text_x = _devCenter + 2;
+      _dnd_batt_text_y = 295;
+      // Battery history
+      _history_start_y = 50;
+      _history_line_height = 40;
+    } else if (_devSize == 260) {
+      // Smaller device (260x260)
       _iconFont = WatchUi.loadResource(Rez.Fonts.icons_20);
       _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_54);
+      // Date
+      _date_x = _devCenter;
+      _date_y = 17;
+      // Sunrise/Sunset
+      _sunrise_icon_x = _devCenter;
+      _sunrise_icon_y = 56;
+      _sunrise_text_x = _devCenter - 20;
+      _sunrise_text_y = 51;
+      _sunset_text_x = _devCenter + 20;
+      _sunset_text_y = 51;
+      // Phone
+      _phone_x = 37;
+      _phone_y = 106;
+      // Time
+      _hour_x = _devCenter - 3;
+      _hour_y = 97;
+      _minute_x = _devCenter + 3;
+      _minute_y = 97;
+      // Seconds
+      _seconds_x = 200;
+      _seconds_y = 109;
+      // Steps
+      _steps_icon_x = _devCenter - 6;
+      _steps_icon_y = 160;
+      _steps_text_x = 97;
+      _steps_text_y = 155;
+      // Recovery
+      _recovery_icon_x = _devCenter - 6;
+      _recovery_icon_y = 194;
+      _recovery_text_x = 97;
+      _recovery_text_y = 189;
+      // Heart Rate
+      _hr_icon_x = _devCenter + 6;
+      _hr_icon_y = 160;
+      _hr_text_x = _devCenter + 31;
+      _hr_text_y = 155;
+      // Battery
+      _batt_icon_x = _devCenter + 6;
+      _batt_icon_y = 194;
+      _batt_text_x = _devCenter + 31;
+      _batt_text_y = 189;
+      // DND mode
+      _dnd_phone_x = _devCenter;
+      _dnd_phone_y = 37;
+      _dnd_date_x = _devCenter;
+      _dnd_date_y = 60;
+      _dnd_hour_x = _devCenter - 3;
+      _dnd_hour_y = _devCenter;
+      _dnd_minute_x = _devCenter + 3;
+      _dnd_minute_y = _devCenter;
+      _dnd_batt_icon_x = _devCenter - 2;
+      _dnd_batt_icon_y = 173;
+      _dnd_batt_text_x = _devCenter + 2;
+      _dnd_batt_text_y = 169;
+      // Battery history
+      _history_start_y = 29;
+      _history_line_height = 23;
     }
 
-    // Calculate scale factor based on device resolution (FR965 is 454x454, FR165 is 390x390)
-    _scale = _devSize / 454.0;
-
-    // Pre-calculate all scaled coordinates
-    _pos_date_y = scale(30);
-    _pos_sunrise_y = scale(95);
-    _pos_sunrise_offset_x = scale(35);
-    _pos_sunrise_text_y = scale(90);
-    _pos_phone_x = scale(65);
-    _pos_phone_y = scale(185);
-    _pos_time_y = scale(170);
-    _pos_seconds_x = scale(350);
-    _pos_seconds_y = scale(194);
-    _pos_steps_icon_y = scale(279);
-    _pos_steps_text_x = scale(170);
-    _pos_steps_text_y = scale(271);
-    _pos_recovery_icon_y = scale(335);
-    _pos_recovery_text_x = scale(170);
-    _pos_recovery_text_y = scale(330);
-    _pos_hr_offset_x = scale(279);
-    _pos_hr_text_offset_x = scale(55);
-    _pos_batt_offset_x = scale(335);
-    _pos_batt_text_offset_x = scale(55);
-
-    // Time offset coordinates
-    _pos_time_offset_x = scale(5);
-    _pos_time_center_offset_x = scale(10);
-
-    // DND mode coordinates
-    _pos_dnd_phone_y = scale(55);
-    _pos_dnd_date_y = scale(105);
-    _pos_dnd_batt_icon_y = scale(300);
-    _pos_dnd_batt_text_y = scale(295);
-
-    // Battery history
-    _pos_history_start_y = scale(50);
-    _pos_history_line_height = scale(40);
+    _date_align = Graphics.TEXT_JUSTIFY_CENTER;
+    _sunrise_icon_align = Graphics.TEXT_JUSTIFY_CENTER;
+    _sunrise_text_align = Graphics.TEXT_JUSTIFY_RIGHT;
+    _sunset_text_align = Graphics.TEXT_JUSTIFY_LEFT;
+    _phone_align = Graphics.TEXT_JUSTIFY_LEFT;
+    _hour_align = Graphics.TEXT_JUSTIFY_RIGHT;
+    _minute_align = Graphics.TEXT_JUSTIFY_LEFT;
+    _seconds_align = Graphics.TEXT_JUSTIFY_LEFT;
+    _steps_icon_align = Graphics.TEXT_JUSTIFY_RIGHT;
+    _steps_text_align = Graphics.TEXT_JUSTIFY_RIGHT;
+    _recovery_icon_align = Graphics.TEXT_JUSTIFY_RIGHT;
+    _recovery_text_align = Graphics.TEXT_JUSTIFY_RIGHT;
+    _hr_icon_align = Graphics.TEXT_JUSTIFY_LEFT;
+    _hr_text_align = Graphics.TEXT_JUSTIFY_LEFT;
+    _batt_icon_align = Graphics.TEXT_JUSTIFY_LEFT;
+    _batt_text_align = Graphics.TEXT_JUSTIFY_LEFT;
+    _dnd_phone_align = Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER;
+    _dnd_date_align = Graphics.TEXT_JUSTIFY_CENTER;
+    _dnd_hour_align = Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER;
+    _dnd_minute_align = Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER;
+    _dnd_batt_icon_align = Graphics.TEXT_JUSTIFY_RIGHT;
+    _dnd_batt_text_align = Graphics.TEXT_JUSTIFY_LEFT;
   }
 
   // Called when this View is brought to the foreground.
@@ -203,42 +345,42 @@ class WatchFaceView extends WatchUi.WatchFace {
 
     // date
     var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-    dc.drawText(_devCenter, _pos_date_y, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(_date_x, _date_y, Graphics.FONT_SMALL, date, _date_align);
 
     // sunrise and sunset
-    dc.drawText(_devCenter, _pos_sunrise_y, _iconFont, "S", Graphics.TEXT_JUSTIFY_CENTER);
-    dc.drawText(_devCenter - _pos_sunrise_offset_x, _pos_sunrise_text_y, Graphics.FONT_SMALL, _dataFields.sunriseText, Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(_devCenter + _pos_sunrise_offset_x, _pos_sunrise_text_y, Graphics.FONT_SMALL, _dataFields.sunsetText, Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_sunrise_icon_x, _sunrise_icon_y, _iconFont, "S", _sunrise_icon_align);
+    dc.drawText(_sunrise_text_x, _sunrise_text_y, Graphics.FONT_SMALL, _dataFields.sunriseText, _sunrise_text_align);
+    dc.drawText(_sunset_text_x, _sunset_text_y, Graphics.FONT_SMALL, _dataFields.sunsetText, _sunset_text_align);
 
     // phone connected
     if (deviceSettings.phoneConnected) {
-      dc.drawText(_pos_phone_x, _pos_phone_y, _iconFont, "b", Graphics.TEXT_JUSTIFY_LEFT);
+      dc.drawText(_phone_x, _phone_y, _iconFont, "b", _phone_align);
     }
 
     // hour
-    dc.drawText(_devCenter - _pos_time_offset_x, _pos_time_y, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_hour_x, _hour_y, _timeFont, dateInfo.hour.format("%02d"), _hour_align);
 
     // minute
-    dc.drawText(_devCenter + _pos_time_offset_x, _pos_time_y, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_minute_x, _minute_y, _timeFont, dateInfo.min.format("%02d"), _minute_align);
 
     // seconds
-    dc.drawText(_pos_seconds_x, _pos_seconds_y, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_seconds_x, _seconds_y, Graphics.FONT_SMALL, dateInfo.sec.format("%02d"), _seconds_align);
 
     // steps
-    dc.drawText(_devCenter - _pos_time_center_offset_x, _pos_steps_icon_y, _iconFont, "s", Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(_pos_steps_text_x, _pos_steps_text_y, Graphics.FONT_SMALL, _steps, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_steps_icon_x, _steps_icon_y, _iconFont, "s", _steps_icon_align);
+    dc.drawText(_steps_text_x, _steps_text_y, Graphics.FONT_SMALL, _steps, _steps_text_align);
 
     // recovery time
-    dc.drawText(_devCenter - _pos_time_center_offset_x, _pos_recovery_icon_y, _iconFont, "r", Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(_pos_recovery_text_x, _pos_recovery_text_y, Graphics.FONT_SMALL, _recoveryTime, Graphics.TEXT_JUSTIFY_RIGHT);
+    dc.drawText(_recovery_icon_x, _recovery_icon_y, _iconFont, "r", _recovery_icon_align);
+    dc.drawText(_recovery_text_x, _recovery_text_y, Graphics.FONT_SMALL, _recoveryTime, _recovery_text_align);
 
     // heart rate
-    dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_hr_offset_x, _iconFont, "h", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter + _pos_hr_text_offset_x, _pos_steps_text_y, Graphics.FONT_SMALL, _dataFields.getHeartRate(), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_hr_icon_x, _hr_icon_y, _iconFont, "h", _hr_icon_align);
+    dc.drawText(_hr_text_x, _hr_text_y, Graphics.FONT_SMALL, _dataFields.getHeartRate(), _hr_text_align);
 
     // battery - may be out of date in the simulator
-    dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_batt_offset_x, _iconFont, "B", Graphics.TEXT_JUSTIFY_LEFT);
-    dc.drawText(_devCenter + _pos_batt_text_offset_x, _pos_recovery_text_y, Graphics.FONT_SMALL, _dataFields.getBattery(), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_batt_icon_x, _batt_icon_y, _iconFont, "B", _batt_icon_align);
+    dc.drawText(_batt_text_x, _batt_text_y, Graphics.FONT_SMALL, _dataFields.getBattery(), _batt_text_align);
 
     // lines for positioning
     drawGrid(dc);
@@ -250,22 +392,22 @@ class WatchFaceView extends WatchUi.WatchFace {
 
     // phone connected
     if (deviceSettings.phoneConnected) {
-      dc.drawText(_devCenter, _pos_dnd_phone_y, _iconFont, "b", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+      dc.drawText(_dnd_phone_x, _dnd_phone_y, _iconFont, "b", _dnd_phone_align);
     }
 
     // date
     var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
-    dc.drawText(_devCenter, _pos_dnd_date_y, Graphics.FONT_SMALL, date, Graphics.TEXT_JUSTIFY_CENTER);
+    dc.drawText(_dnd_date_x, _dnd_date_y, Graphics.FONT_SMALL, date, _dnd_date_align);
 
     // hour
-    dc.drawText(_devCenter - _pos_time_offset_x, _devCenter, _timeFont, dateInfo.hour.format("%02d"), Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(_dnd_hour_x, _dnd_hour_y, _timeFont, dateInfo.hour.format("%02d"), _dnd_hour_align);
 
     // minute
-    dc.drawText(_devCenter + _pos_time_offset_x, _devCenter, _timeFont, dateInfo.min.format("%02d"), Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+    dc.drawText(_dnd_minute_x, _dnd_minute_y, _timeFont, dateInfo.min.format("%02d"), _dnd_minute_align);
 
     // battery
-    dc.drawText(_devCenter - _pos_time_center_offset_x, _pos_dnd_batt_icon_y, _iconFont, "B", Graphics.TEXT_JUSTIFY_RIGHT);
-    dc.drawText(_devCenter + _pos_time_center_offset_x, _pos_dnd_batt_text_y, Graphics.FONT_SMALL, _dataFields.getBattery(), Graphics.TEXT_JUSTIFY_LEFT);
+    dc.drawText(_dnd_batt_icon_x, _dnd_batt_icon_y, _iconFont, "B", _dnd_batt_icon_align);
+    dc.drawText(_dnd_batt_text_x, _dnd_batt_text_y, Graphics.FONT_SMALL, _dataFields.getBattery(), _dnd_batt_text_align);
 
     // lines for positioning
     drawGrid(dc);
@@ -286,10 +428,10 @@ class WatchFaceView extends WatchUi.WatchFace {
       return;
     }
 
-    var y = _pos_history_start_y;
+    var y = _history_start_y;
     for (var i = 0; i < entries.size(); i++) {
       dc.drawText(_devCenter, y, Graphics.FONT_TINY, entries[i], Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
-      y += _pos_history_line_height;
+      y += _history_line_height;
     }
   }
 
@@ -339,10 +481,5 @@ class WatchFaceView extends WatchUi.WatchFace {
     if (_dataFields != null) {
       _dataFields.batteryLogEnabled = _settings.batteryLogEnabled;
     }
-  }
-
-  // Helper function to scale a coordinate value based on device resolution.
-  private function scale(value as Number) as Number {
-    return (value * _scale).toNumber();
   }
 }
