@@ -413,6 +413,8 @@ class WatchFaceView extends WatchUi.WatchFace {
     drawGrid(dc);
   }
 
+  // TODO: onPartialUpdate for seconds in low power mode?
+
   function drawBatteryHistory(dc as Dc) as Void {
     if (!_settings.batteryLogEnabled) {
       dc.drawText(_devCenter, _devCenter, Graphics.FONT_SMALL, "Battery Log Disabled", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -473,10 +475,11 @@ class WatchFaceView extends WatchUi.WatchFace {
   function loadSettings() {
     if (_settings == null) {
       _settings = new Settings();
+      Utils.println("settings initialized");
     }
 
     _settings.loadSettings();
-    Utils.println("Loaded settings: " + _settings.toString());
+    Utils.println("loaded settings");
 
     if (_dataFields != null) {
       _dataFields.batteryLogEnabled = _settings.batteryLogEnabled;

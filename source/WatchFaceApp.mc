@@ -28,31 +28,39 @@ class WatchFaceApp extends Application.AppBase {
         return [_faceView, new WatchDelegate()];
     }
 
-    // Return the settings view of your application here.
+    // Return the on-device settings view of your application here.
     function getSettingsView() {
         Utils.println("app.getSettingsView");
         return [new ODSettingsMenu(), new ODSettingsMenuDelegate()];
     }
 
-    // Called when settings have changed via the ConnectIQ phone app.
+    // Called when settings have changed via the ConnectIQ app.
     function onSettingsChanged() as Void {
         Utils.println("app.onSettingsChanged");
-        refreshWatchUi(true, true);
+        loadSettings(true);
     }
 
-    // Refresh the watch face UI.
-    function refreshWatchUi(loadSettings as Boolean, requestUpdate as Boolean) as Void {
+    // Load the settings.
+    function loadSettings(requestUpdate as Boolean) as Void {
+        Utils.println("app.loadSettings: requestUpdate=" + requestUpdate);
+
         if (_faceView == null) {
+            Utils.println("app.loadSettings: _faceView is null");
+            return;
+        }
+        
+        _faceView.loadSettings();
+
+        if (!requestUpdate) {
             return;
         }
 
-        if (loadSettings) {
-            _faceView.loadSettings();
+        if (WatchUi == null) {
+            Utils.println("app.loadSettings: WatchUi is null");
+            return;
         }
 
-        if (requestUpdate) {
-            WatchUi.requestUpdate();
-        }
+        WatchUi.requestUpdate();
     }
 }
 

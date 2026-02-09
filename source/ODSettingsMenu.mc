@@ -1,6 +1,8 @@
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+// On-device settings menu.
+// Shown when selecting 'Customize' when selecting a watch face.
 // https://developer.garmin.com/connect-iq/core-topics/native-controls/
 class ODSettingsMenu extends WatchUi.Menu2 {
     function initialize() {

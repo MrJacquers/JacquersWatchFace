@@ -129,7 +129,7 @@ class DataFields {
 
         if (batteryLogEnabled && battery != batteryLevel) {
             // update the battery level
-            Utils.println("Battery changed from " + batteryLevel + " to " + battery);
+            Utils.println("battery changed from " + batteryLevel + " to " + battery);
             batteryLevel = battery;
 
             // get the battery level history

@@ -10,18 +10,17 @@ class WatchDelegate extends WatchFaceDelegate {
 
   // Handle long press touch events.
   function onPress(clickEvent) as Boolean {
-    // Check if we are showing battery log
-    var showBatteryLog = Application.Properties.getValue("ShowBatteryLog") as Boolean;
-    if (showBatteryLog) {
-      Application.Properties.setValue("ShowBatteryLog", false);
-      Application.getApp().method(:refreshWatchUi).invoke(true, true);
-      return true;
-    }
-
     var coords = clickEvent.getCoordinates();
     var x = coords[0];
     var y = coords[1];
     Utils.println("onPress x:" + x + ",y:" + y);
+
+    // Check if the battery log is being displayed
+    if (Application.Properties.getValue("ShowBatteryLog")) {
+      Application.Properties.setValue("ShowBatteryLog", false);
+      Application.getApp().loadSettings(false);
+      return true;
+    }
 
     if (x < 227 && y < 227) {
       Utils.println("onPress: altitude");
@@ -38,7 +37,7 @@ class WatchDelegate extends WatchFaceDelegate {
     if (y > 227) {
       Utils.println("onPress: battery");
       Application.Properties.setValue("ShowBatteryLog", true);
-      Application.getApp().method(:refreshWatchUi).invoke(true, true);
+      Application.getApp().loadSettings(false);
       return true;
     }
 
