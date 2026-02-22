@@ -9,6 +9,7 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _devCenter;
   private var _iconFont;
   private var _timeFont;
+  private var _timeFontOutline;
   private var _hidden;
   private var _lowPwrMode;
   private var _settings;
@@ -85,9 +86,9 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _dnd_minute_x;
   private var _dnd_minute_y;
   private var _dnd_minute_align;
-  private var _dnd_batt_icon_x;
-  private var _dnd_batt_icon_y;
-  private var _dnd_batt_icon_align;
+  //private var _dnd_batt_icon_x;
+  //private var _dnd_batt_icon_y;
+  //private var _dnd_batt_icon_align;
   private var _dnd_batt_text_x;
   private var _dnd_batt_text_y;
   private var _dnd_batt_text_align;
@@ -112,6 +113,7 @@ class WatchFaceView extends WatchUi.WatchFace {
       // FR965 (454x454)
       _iconFont = WatchUi.loadResource(Rez.Fonts.icons_36);
       _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_96);
+      _timeFontOutline = WatchUi.loadResource(Rez.Fonts.oxanium_64_outline);
       // Date
       _date_x = _devCenter;
       _date_y = 30;
@@ -162,8 +164,8 @@ class WatchFaceView extends WatchUi.WatchFace {
       _dnd_hour_y = _devCenter;
       _dnd_minute_x = _devCenter + 5;
       _dnd_minute_y = _devCenter;
-      _dnd_batt_icon_x = _devCenter - 2;
-      _dnd_batt_icon_y = 300;
+      //_dnd_batt_icon_x = _devCenter - 2;
+      //_dnd_batt_icon_y = 300;
       _dnd_batt_text_x = _devCenter + 2;
       _dnd_batt_text_y = 295;
       // Battery history
@@ -173,6 +175,7 @@ class WatchFaceView extends WatchUi.WatchFace {
       // Smaller device (260x260)
       _iconFont = WatchUi.loadResource(Rez.Fonts.icons_20);
       _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_54);
+      _timeFontOutline = WatchUi.loadResource(Rez.Fonts.oxanium_64_outline);
       // Date
       _date_x = _devCenter;
       _date_y = 17;
@@ -223,9 +226,9 @@ class WatchFaceView extends WatchUi.WatchFace {
       _dnd_hour_y = _devCenter;
       _dnd_minute_x = _devCenter + 3;
       _dnd_minute_y = _devCenter;
-      _dnd_batt_icon_x = _devCenter - 2;
-      _dnd_batt_icon_y = 173;
-      _dnd_batt_text_x = _devCenter + 2;
+      //_dnd_batt_icon_x = _devCenter - 2;
+      //_dnd_batt_icon_y = 173;
+      _dnd_batt_text_x = _devCenter;
       _dnd_batt_text_y = 169;
       // Battery history
       _history_start_y = 29;
@@ -252,8 +255,8 @@ class WatchFaceView extends WatchUi.WatchFace {
     _dnd_date_align = Graphics.TEXT_JUSTIFY_CENTER;
     _dnd_hour_align = Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER;
     _dnd_minute_align = Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER;
-    _dnd_batt_icon_align = Graphics.TEXT_JUSTIFY_RIGHT;
-    _dnd_batt_text_align = Graphics.TEXT_JUSTIFY_LEFT;
+    //_dnd_batt_icon_align = Graphics.TEXT_JUSTIFY_RIGHT;
+    _dnd_batt_text_align = Graphics.TEXT_JUSTIFY_CENTER;
   }
 
   // Called when this View is brought to the foreground.
@@ -386,6 +389,16 @@ class WatchFaceView extends WatchUi.WatchFace {
     drawGrid(dc);
   }
 
+  // For seconds in low power mode on MIP devices.
+  /*function onPartialUpdate(dc as Dc) {
+    dc.setClip(_seconds_x -2, _seconds_y + 20, 31, 22);
+    dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_BLACK);
+    dc.clear();
+    var time = System.getClockTime();
+    dc.drawText(_seconds_x, _seconds_y + 15, Graphics.FONT_SMALL, time.sec.format("%02d"), _seconds_align);
+    dc.clearClip();
+  }*/
+
   // AOD or MIP screen low power mode display.
   private function drawLowPowerMode(dc as Dc, dateInfo as Gregorian.Info, deviceSettings as DeviceSettings) as Void {
     Utils.println("drawLowPowerMode");
@@ -400,20 +413,18 @@ class WatchFaceView extends WatchUi.WatchFace {
     dc.drawText(_dnd_date_x, _dnd_date_y, Graphics.FONT_SMALL, date, _dnd_date_align);
 
     // hour
-    dc.drawText(_dnd_hour_x, _dnd_hour_y, _timeFont, dateInfo.hour.format("%02d"), _dnd_hour_align);
+    dc.drawText(_dnd_hour_x, _dnd_hour_y, _timeFontOutline, dateInfo.hour.format("%02d"), _dnd_hour_align);
 
     // minute
-    dc.drawText(_dnd_minute_x, _dnd_minute_y, _timeFont, dateInfo.min.format("%02d"), _dnd_minute_align);
+    dc.drawText(_dnd_minute_x, _dnd_minute_y, _timeFontOutline, dateInfo.min.format("%02d"), _dnd_minute_align);
 
     // battery
-    dc.drawText(_dnd_batt_icon_x, _dnd_batt_icon_y, _iconFont, "B", _dnd_batt_icon_align);
+    //dc.drawText(_dnd_batt_icon_x, _dnd_batt_icon_y, _iconFont, "B", _dnd_batt_icon_align);
     dc.drawText(_dnd_batt_text_x, _dnd_batt_text_y, Graphics.FONT_SMALL, _dataFields.getBattery(), _dnd_batt_text_align);
 
     // lines for positioning
     drawGrid(dc);
   }
-
-  // TODO: onPartialUpdate for seconds in low power mode?
 
   function drawBatteryHistory(dc as Dc) as Void {
     if (!_settings.batteryLogEnabled) {

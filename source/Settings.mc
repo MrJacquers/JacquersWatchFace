@@ -30,9 +30,9 @@ class Settings {
         if (Toybox.Application has :Properties) {
             //layoutType = Application.Properties.getValue("LayoutType");
             bgColor = Application.Properties.getValue("BGColor");
-            textColorDay = Application.Properties.getValue("TextColorDay").toLongWithBase(16);
-            textColorNight = Application.Properties.getValue("TextColorNight").toLongWithBase(16);
-            textColorSleep = Application.Properties.getValue("TextColorSleep").toLongWithBase(16);
+            textColorDay = Application.Properties.getValue("TextColorDay").toNumberWithBase(16);
+            textColorNight = Application.Properties.getValue("TextColorNight").toNumberWithBase(16);
+            textColorSleep = Application.Properties.getValue("TextColorSleep").toNumberWithBase(16);
             //timeFont = Application.Properties.getValue("TimeFont");
             //dateColor = Application.Properties.getValue("DateColor");
             //hrColor = Application.Properties.getValue("HRColor");
