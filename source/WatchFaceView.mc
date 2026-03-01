@@ -113,7 +113,7 @@ class WatchFaceView extends WatchUi.WatchFace {
       // FR965 (454x454)
       _iconFont = WatchUi.loadResource(Rez.Fonts.icons_36);
       _timeFont = WatchUi.loadResource(Rez.Fonts.oxanium_96);
-      _timeFontOutline = WatchUi.loadResource(Rez.Fonts.oxanium_64_outline);
+      _timeFontOutline = WatchUi.loadResource(Rez.Fonts.oxanium_96);
       // Date
       _date_x = _devCenter;
       _date_y = 30;

@@ -3,7 +3,7 @@
     <!-- <property id="LayoutType" type="number">0</property> -->
     <property id="BGColor" type="number">0x000000</property>
     <property id="TextColorDay" type="string">0x329600</property>
-    <property id="TextColorNight" type="string">0xC86400</property>
+    <property id="TextColorNight" type="string">0xFF6A00</property>
     <property id="TextColorSleep" type="string">0xC86400</property>
     <property id="ShowGrid" type="boolean">false</property>
     <property id="BatteryLogEnabled" type="boolean">true</property>

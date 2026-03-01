@@ -16,6 +16,8 @@ class DataFields {
     private var _bodyBatteryId;
     private var _recoveryTimeId;
     private var _seaLevelPressureId;
+    private var _sunriseId;
+    private var _sunsetId;
 
     function initialize() {
         getComplicationIds();
@@ -33,6 +35,8 @@ class DataFields {
         _bodyBatteryId = new Complications.Id(Complications.COMPLICATION_TYPE_BODY_BATTERY);
         _recoveryTimeId = new Complications.Id(Complications.COMPLICATION_TYPE_RECOVERY_TIME);
         _seaLevelPressureId = new Complications.Id(Complications.COMPLICATION_TYPE_SEA_LEVEL_PRESSURE);
+        _sunriseId = new Complications.Id(Complications.COMPLICATION_TYPE_SUNRISE);
+        _sunsetId = new Complications.Id(Complications.COMPLICATION_TYPE_SUNSET);
         //Complications.registerComplicationChangeCallback(self.method(:onComplicationChanged));
     }
 
@@ -187,6 +191,26 @@ class DataFields {
     // If the location is not available, use the last known location from storage.
     // Check if it's day or night based on the current time and sunrise/sunset times.
     function getSunInfo() {
+        var sunriseComp = Complications.getComplication(_sunriseId);
+        var sunsetComp = Complications.getComplication(_sunsetId);
+        // value is a non-negative Number representing seconds since midnight local time of the sunrise or null
+        if (sunriseComp != null && sunriseComp.value != null && sunsetComp != null && sunsetComp.value != null) {
+            var hours = (sunriseComp.value / 3600);
+            var minutes = ((sunriseComp.value % 3600) / 60);
+            sunriseText = Lang.format("$1$:$2$", [hours.format("%02d"), minutes.format("%02d")]);
+
+            hours = (sunsetComp.value / 3600);
+            minutes = ((sunsetComp.value % 3600) / 60);
+            sunsetText = Lang.format("$1$:$2$", [hours.format("%02d"), minutes.format("%02d")]);
+
+            var now = Time.now().value();
+            var midnight = Time.today().value();
+            var sunrise = midnight + sunriseComp.value;
+            var sunset = midnight + sunsetComp.value;
+            isDay = now > sunrise && now < sunset;
+            return;
+        }
+
         var now = Time.now();
         var location = Activity.getActivityInfo().currentLocation;
 
@@ -216,7 +240,7 @@ class DataFields {
             sunsetText = sunsetInfo.hour.format("%02d") + ":" + sunsetInfo.min.format("%02d");
 
             // check if it's day or night
-            isDay = now.value() >= sunrise.value() && now.value() <= sunset.value();
+            isDay = now.value() > sunrise.value() && now.value() < sunset.value();
             return;
         }
 
