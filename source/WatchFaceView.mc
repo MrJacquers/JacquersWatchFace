@@ -329,14 +329,16 @@ class WatchFaceView extends WatchUi.WatchFace {
       return;
     }
 
-    // foreground color
-    dc.setColor(_dataFields.isDay ? _settings.textColorDay : _settings.textColorNight, Graphics.COLOR_TRANSPARENT);
-
     // low power mode display
     if (_lowPwrMode) {
+      //_dataFields.getSunInfo(); // enable this to have correct colour, but will use more cpu and battery
+      dc.setColor(_dataFields.isDay ? _settings.textColorDay : _settings.textColorNight, Graphics.COLOR_TRANSPARENT);
       drawLowPowerMode(dc, dateInfo, deviceSettings);
       return;
     }
+
+    // foreground color
+    dc.setColor(_dataFields.isDay ? _settings.textColorDay : _settings.textColorNight, Graphics.COLOR_TRANSPARENT);
 
     // battery log display
     if (_settings.showBatteryLog) {
