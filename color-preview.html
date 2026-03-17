@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watch Face Color Preview</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 24px;
+      background: #000;
+      color: #f4f4f4;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: auto;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+
+    th {
+      background: #1f1f1f;
+      color: #f1f1f1;
+      font-weight: 600;
+    }
+
+    .swatch {
+      width: 120px;
+      height: 32px;
+      border-radius: 4px;
+      border: 1px solid #999;
+    }
+
+    caption {
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <caption>Text Color Palette</caption>
+    <thead>
+      <tr>
+        <!-- <th>Code</th> -->
+        <th>Code</th>
+        <th>Preview</th>
+      </tr>
+    </thead>
+    <tbody id="colorRows"></tbody>
+  </table>
+
+  <script>
+    const hexColors = [
+      "0xFFFFFF","0xFFFFAA","0xFFFF55","0xFFFF00","0xFFAAFF","0xFFAAAA","0xFFAA55","0xFFAA00",
+      "0xFF55FF","0xFF55AA","0xFF5555","0xFF5500","0xFF00FF","0xFF00AA","0xFF0055","0xFF0000",
+      "0xAAFFFF","0xAAFFAA","0xAAFF55","0xAAFF00","0xAAAAFF","0xAAAAAA","0xAAAA55","0xAAAA00",
+      "0xAA55FF","0xAA55AA","0xAA5555","0xAA5500","0xAA00FF","0xAA00AA","0xAA0055","0xAA0000",
+      "0x55FFFF","0x55FFAA","0x55FF55","0x55FF00","0x55AAFF","0x55AAAA","0x55AA55","0x55AA00",
+      "0x5555FF","0x5555AA","0x555555","0x555500","0x5500FF","0x5500AA","0x550055","0x550000",
+      "0x00FFFF","0x00FFAA","0x00FF55","0x00FF00","0x00AAFF","0x00AAAA","0x00AA55","0x00AA00",
+      "0x0055FF","0x0055AA","0x005555","0x005500","0x0000FF","0x0000AA","0x000055",
+    ];
+
+    const tableBody = document.getElementById('colorRows');
+
+    hexColors.forEach(code => {
+      const row = document.createElement('tr');
+      const label = document.createElement('td');
+      label.textContent = code;
+
+      // Convert 0xRRGGBB to #RRGGBB for CSS
+      const cssColor = code.replace(/^0x/i, '#');
+
+      const hexCell = document.createElement('td');
+      hexCell.textContent = code;
+      hexCell.style.color = cssColor;
+      hexCell.style.fontWeight = '600';
+
+      const preview = document.createElement('td');
+      const swatch = document.createElement('div');
+      swatch.className = 'swatch';
+      swatch.style.backgroundColor = cssColor;
+      swatch.title = cssColor;
+
+      preview.appendChild(swatch);
+
+      //row.appendChild(label);
+      row.appendChild(hexCell);
+      row.appendChild(preview);
+      tableBody.appendChild(row);
+    });
+  </script>
+</body>
+</html>

@@ -73,6 +73,10 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _batt_text_x;
   private var _batt_text_y;
   private var _batt_text_align;
+  // Alarms
+  private var _alarm_icon_x;
+  private var _alarm_icon_y;
+  private var _alarm_icon_align;
   // DND mode coordinates
   private var _dnd_phone_x;
   private var _dnd_phone_y;
@@ -92,9 +96,19 @@ class WatchFaceView extends WatchUi.WatchFace {
   private var _dnd_batt_text_x;
   private var _dnd_batt_text_y;
   private var _dnd_batt_text_align;
+  private var _dnd_alarm_icon_x;
+  private var _dnd_alarm_icon_y;
+  private var _dnd_alarm_icon_align;
   // Battery history
   private var _history_start_y;
   private var _history_line_height;
+
+  var _hexColors as Array<String> = [
+      "0xFFFFFF","0xFFFFAA","0xFFFF55","0xFFFF00","0xFFAAFF","0xFFAAAA","0xFFAA55","0xFFAA00",
+      "0xFF55FF","0xFF55AA","0xFF5555","0xFF5500","0xFF00FF","0xFF00AA","0xFF0055","0xFF0000",
+      "0xAAFFFF","0xAAFFAA","0xAAFF55","0xAAFF00","0xAAAAFF","0xAAAAAA","0xAAAA55","0xAAAA00",
+      "0xAA55FF","0xAA55AA","0xAA5555","0xAA5500","0xAA00FF","0xAA00AA","0xAA0055","0xAA0000",
+    ];
 
   function initialize() {
     Utils.println("view.initialize");
@@ -155,6 +169,10 @@ class WatchFaceView extends WatchUi.WatchFace {
       _batt_icon_y = 335;
       _batt_text_x = _devCenter + 55;
       _batt_text_y = 330;
+      // Alarms
+      _alarm_icon_x = _devCenter;
+      _alarm_icon_y = _devSize - 60;
+      _alarm_icon_align = Graphics.TEXT_JUSTIFY_CENTER;
       // DND mode
       _dnd_phone_x = _devCenter;
       _dnd_phone_y = 55;
@@ -168,6 +186,9 @@ class WatchFaceView extends WatchUi.WatchFace {
       //_dnd_batt_icon_y = 300;
       _dnd_batt_text_x = _devCenter + 2;
       _dnd_batt_text_y = 295;
+      _dnd_alarm_icon_x = _devCenter;
+      _dnd_alarm_icon_y = _devSize - 80;
+      _dnd_alarm_icon_align = Graphics.TEXT_JUSTIFY_CENTER;
       // Battery history
       _history_start_y = 50;
       _history_line_height = 40;
@@ -217,6 +238,10 @@ class WatchFaceView extends WatchUi.WatchFace {
       _batt_icon_y = 194;
       _batt_text_x = _devCenter + 31;
       _batt_text_y = 189;
+      // Alarms
+      _alarm_icon_x = _devCenter;
+      _alarm_icon_y = _devSize - 35;
+      _alarm_icon_align = Graphics.TEXT_JUSTIFY_CENTER;
       // DND mode
       _dnd_phone_x = _devCenter;
       _dnd_phone_y = 37;
@@ -230,6 +255,9 @@ class WatchFaceView extends WatchUi.WatchFace {
       //_dnd_batt_icon_y = 173;
       _dnd_batt_text_x = _devCenter;
       _dnd_batt_text_y = 169;
+      _dnd_alarm_icon_x = _devCenter;
+      _dnd_alarm_icon_y = _devSize - 50;
+      _dnd_alarm_icon_align = Graphics.TEXT_JUSTIFY_CENTER;
       // Battery history
       _history_start_y = 29;
       _history_line_height = 23;
@@ -272,6 +300,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     _recoveryTime = _dataFields.getRecoveryTime();
     _dataFields.getSunInfo();
     //_dataFields.subscribeComplications();
+    setRandomTextColor();
   }
 
   // Called when this View is removed from the screen.
@@ -300,6 +329,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     _recoveryTime = _dataFields.getRecoveryTime();
     _dataFields.getSunInfo();
     //_dataFields.subscribeComplications();
+    setRandomTextColor();
   }
 
   // Updates the View:
@@ -322,7 +352,7 @@ class WatchFaceView extends WatchUi.WatchFace {
     // get the date info, the strings will be localized.
     var dateInfo = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 
-    // do not disturb / sleep mode display // TODO: look at night mode as well?
+    // do not disturb mode display, also used for sleep
     if (deviceSettings.doNotDisturb) {
       dc.setColor(_settings.textColorSleep, Graphics.COLOR_TRANSPARENT);
       drawLowPowerMode(dc, dateInfo, deviceSettings);
@@ -331,6 +361,7 @@ class WatchFaceView extends WatchUi.WatchFace {
 
     // low power mode display
     if (_lowPwrMode) {
+      //setRandomTextColor();
       //_dataFields.getSunInfo(); // enable this to have correct colour, but will use more cpu and battery
       dc.setColor(_dataFields.isDay ? _settings.textColorDay : _settings.textColorNight, Graphics.COLOR_TRANSPARENT);
       drawLowPowerMode(dc, dateInfo, deviceSettings);
@@ -346,7 +377,7 @@ class WatchFaceView extends WatchUi.WatchFace {
       return;
     }
 
-    // normal full power mode display
+    // draw normal full power mode display
 
     // date
     var date = Lang.format("$1$ $2$ $3$", [dateInfo.day_of_week, dateInfo.day.format("%02d"), dateInfo.month]);
@@ -387,6 +418,11 @@ class WatchFaceView extends WatchUi.WatchFace {
     dc.drawText(_batt_icon_x, _batt_icon_y, _iconFont, "B", _batt_icon_align);
     dc.drawText(_batt_text_x, _batt_text_y, Graphics.FONT_SMALL, _dataFields.getBattery(), _batt_text_align);
 
+    // alarms
+    if (deviceSettings.alarmCount > 0) {
+      dc.drawText(_alarm_icon_x, _alarm_icon_y, _iconFont, "A", _alarm_icon_align);
+    }
+
     // lines for positioning
     drawGrid(dc);
   }
@@ -423,6 +459,11 @@ class WatchFaceView extends WatchUi.WatchFace {
     // battery
     //dc.drawText(_dnd_batt_icon_x, _dnd_batt_icon_y, _iconFont, "B", _dnd_batt_icon_align);
     dc.drawText(_dnd_batt_text_x, _dnd_batt_text_y, Graphics.FONT_SMALL, _dataFields.getBattery(), _dnd_batt_text_align);
+
+    // alarms
+    if (deviceSettings.alarmCount > 0) {
+      dc.drawText(_dnd_alarm_icon_x, _dnd_alarm_icon_y, _iconFont, "A", _dnd_alarm_icon_align);
+    }
 
     // lines for positioning
     drawGrid(dc);
@@ -497,5 +538,12 @@ class WatchFaceView extends WatchUi.WatchFace {
     if (_dataFields != null) {
       _dataFields.batteryLogEnabled = _settings.batteryLogEnabled;
     }
+  }
+
+  function setRandomTextColor() {
+    // choose a pseudo-random color from _hexColors based on current time
+    var idx = Time.now().value() % _hexColors.size();
+    _settings.textColorDay = _hexColors[idx].toNumberWithBase(16);
+    _settings.textColorNight = _hexColors[idx].toNumberWithBase(16);
   }
 }
