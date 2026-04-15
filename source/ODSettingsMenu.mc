@@ -17,6 +17,7 @@ class ODSettingsMenu extends WatchUi.Menu2 {
         // https://developer.garmin.com/connect-iq/api-docs/Toybox/WatchUi/ToggleMenuItem.html
         Menu2.addItem(new WatchUi.ToggleMenuItem("Battery Log", "Log Battery Level", "BatteryLogEnabled", settings.batteryLogEnabled, null));
         Menu2.addItem(new WatchUi.ToggleMenuItem("Show Battery Log", "Show Battery Log", "ShowBatteryLog", settings.showBatteryLog, null));
+        Menu2.addItem(new WatchUi.ToggleMenuItem("Random Text Color", "Random Text Color", "RandomTextColor", settings.randomTextColor, null));
         Menu2.addItem(new WatchUi.ToggleMenuItem("Grid", "Show Grid Lines", "ShowGrid", settings.showGrid, null));
     }
 }

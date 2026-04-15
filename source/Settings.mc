@@ -23,6 +23,7 @@ class Settings {
     var batteryLevel = 0;
     var batteryLogEnabled = false;
     var showBatteryLog = false;
+    var randomTextColor = false;
 
     function loadSettings() {
         // https://developer.garmin.com/connect-iq/core-topics/properties-and-app-settings/
@@ -45,11 +46,10 @@ class Settings {
             //stepsColor = Application.Properties.getValue("StepsColor");
             //recoveryColor = Application.Properties.getValue("RecoveryColor");
             //battColor = Application.Properties.getValue("BattColor");
-
-            // On-device settings: accessible via select watch face -> customize
             showGrid = Application.Properties.getValue("ShowGrid");
             batteryLogEnabled = Application.Properties.getValue("BatteryLogEnabled");
             showBatteryLog = Application.Properties.getValue("ShowBatteryLog");
+            randomTextColor = Application.Properties.getValue("RandomTextColor");
         }
 
         // Load persisted values

@@ -42,6 +42,9 @@
     <setting propertyKey="@Properties.ShowBatteryLog" title="@Strings.ShowBatteryLogTitle">
         <settingConfig type="boolean" />
     </setting>
+    <setting propertyKey="@Properties.RandomTextColor" title="@Strings.RandomTextColorTitle">
+        <settingConfig type="boolean" />
+    </setting>
     <!-- <setting propertyKey="@Properties.TimeFont" title="@Strings.TimeFontTitle">
         <settingConfig type="list">
             <listEntry value="0">@Strings.TimeFont_01</listEntry>

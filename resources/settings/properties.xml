@@ -8,6 +8,7 @@
     <property id="ShowGrid" type="boolean">false</property>
     <property id="BatteryLogEnabled" type="boolean">true</property>
     <property id="ShowBatteryLog" type="boolean">false</property>
+    <property id="RandomTextColor" type="boolean">false</property>
     <!-- <property id="TimeFont" type="number">0</property> -->
     <!-- <property id="DateColor" type="number">0xAAAAAA</property> -->
     <!-- <property id="HRColor" type="number">0xFF5500</property> -->

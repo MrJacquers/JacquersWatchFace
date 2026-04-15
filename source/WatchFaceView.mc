@@ -541,6 +541,10 @@ class WatchFaceView extends WatchUi.WatchFace {
   }
 
   function setRandomTextColor() {
+    if (!_settings.randomTextColor) {
+      return;
+    }
+
     // choose a pseudo-random color from _hexColors based on current time
     var idx = Time.now().value() % _hexColors.size();
     _settings.textColorDay = _hexColors[idx].toNumberWithBase(16);
